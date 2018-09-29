@@ -6,8 +6,9 @@ import (
 )
 
 const (
-	UserInfoTableName = "user_info"
-)
+	UserTableName = "user"
+	ProblemTableName = "problem"
+	)
 
 func InitDB(dbType, dbURL string) {
 
@@ -16,11 +17,7 @@ func InitDB(dbType, dbURL string) {
 		panic(err)
 	}
 
-	if !db.HasTable(&UserInfo{}) {
-		db.AutoMigrate(&UserInfo{})
-	}
-
-	defer db.Close()
+	db.SingularTable(true)
 
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(10)

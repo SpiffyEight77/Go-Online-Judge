@@ -8,15 +8,27 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 
-	router.LoadHTMLGlob("templates/*")
-
-	router.GET("/", controllers.Home)
-	router.GET("/faq", controllers.Faq)
-	router.GET("/problem", controllers.Problem)
-	router.GET("/login", controllers.Login)
-	router.GET("/register", controllers.Register)
-	router.POST("/register", controllers.PostRegister)
 
 
+	v1 := router.Group("/api/v1")
+	{
+		user := v1.Group("/user")
+		{
+			user.GET("/login", controllers.GetUserLogin)
+			user.POST("/login", controllers.PostUserLogin)
+			user.GET("/register", controllers.GetUserRegister)
+			user.POST("/register", controllers.PostUserRegister)
+			user.GET("/profile")
+			user.POST("/profile")
+		}
+		administration := v1.Group("/admin")
+		{
+			user := administration.Group("/user")
+			{
+				user.GET("/login", controllers.GetUserLogin)
+				user.POST("/login", controllers.PostUserLogin)
+			}
+		}
+	}
 	return router
 }
