@@ -1,0 +1,8 @@
+<seelog type="sync">
+    <outputs formatid="main">
+        <console/>
+    </outputs>
+    <formats>
+        <format id="main" format="%Date/%Time [%LEV] %Msg%n"/>
+    </formats>
+</seelog>

@@ -9,9 +9,9 @@ const (
 	UserInfoTableName = "user_info"
 )
 
-func Initdb() {
+func InitDB(dbType, dbURL string) {
 
-	db, err := gorm.Open("mysql", "root:root@/Eu_OJ?charset=utf8&parseTime=True&loc=Local")
+	db, err := gorm.Open(dbType, dbURL)
 	if err != nil {
 		panic(err)
 	}
