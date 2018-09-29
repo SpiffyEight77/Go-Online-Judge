@@ -6,9 +6,9 @@ import (
 )
 
 const (
-	UserTableName = "user"
+	UserTableName    = "user"
 	ProblemTableName = "problem"
-	)
+)
 
 func InitDB(dbType, dbURL string) {
 

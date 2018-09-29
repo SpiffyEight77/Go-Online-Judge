@@ -39,7 +39,6 @@ func PostUserRegister(c *gin.Context) {
 
 }
 
-
 // @Summary User Profile
 // @Produce json
 // @Router /api/v1/user/profile [get]
