@@ -6,16 +6,15 @@ import (
 	"online-judge/middlewares/jwt"
 	"time"
 	"online-judge/controllers"
+	"net/http"
 )
 
 func JWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var code int
-		var data interface{}
 
 		code = errCode.SUCCESS
-		//token := c.GetHeader("Authorization")
-		token := c.Query("token")
+		token := c.GetHeader("Authorization")
 
 		if token == "" {
 			code = errCode.TOKEN_MISSING
@@ -29,10 +28,9 @@ func JWT() gin.HandlerFunc {
 		}
 
 		if code != errCode.SUCCESS {
-			controllers.Response(c,code,errCode.UNAUTHORIZED,data)
+			controllers.Response(c,http.StatusUnauthorized,errCode.UNAUTHORIZED,nil)
 			c.Abort()
 			return
-
 		}
 
 		c.Next()
