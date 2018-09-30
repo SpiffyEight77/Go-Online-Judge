@@ -8,6 +8,7 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"online-judge/controllers"
 	_ "online-judge/docs"
+	"online-judge/middlewares"
 )
 
 func InitRouter() *gin.Engine {
@@ -26,8 +27,8 @@ func InitRouter() *gin.Engine {
 			user.POST("/login", controllers.PostUserLogin)
 			user.GET("/register", controllers.GetUserRegister)
 			user.POST("/register", controllers.PostUserRegister)
-			user.GET("/profile", controllers.PostUserProfile)
-			user.POST("/profile", controllers.PostUserProfile)
+			user.GET("/profile", controllers.PostUserProfile).Use(middlewares.JWT())
+			user.POST("/profile", controllers.PostUserProfile).Use(middlewares.JWT())
 		}
 		administration := v1.Group("/admin")
 		{
