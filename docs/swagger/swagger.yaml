@@ -1,0 +1,60 @@
+info:
+  contact: {}
+  license: {}
+paths:
+  /api/v1/admin/user/login:
+    get:
+      produces:
+      - application/json
+      summary: Admin Login
+    post:
+      parameters:
+      - description: username
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: password
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      summary: Admin Login
+  /api/v1/user/login:
+    get:
+      produces:
+      - application/json
+      summary: User Register
+    post:
+      parameters:
+      - description: username
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: password
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      summary: User Login
+  /api/v1/user/profile:
+    get:
+      produces:
+      - application/json
+      summary: User Profile
+    post:
+      parameters:
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: User Login
+swagger: "2.0"

@@ -1,0 +1,92 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {},
+        "license": {}
+    },
+    "paths": {
+        "/api/v1/admin/user/login": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Admin Login"
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Admin Login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/login": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Register"
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Login",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "password",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/profile": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Profile"
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Login",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        }
+    }
+}
