@@ -25,7 +25,7 @@ var CodeFlags = map[int]string{
 	REQUEST_EXP_STATUS_FAILED:               "exp status error",
 	REQUEST_EXP_GROUP_EXIST:                 "exp group already exist",
 	REQUEST_EXP_GROUP_NOT_EXIST:             "exp group NOT exist",
-	AUTH_ERROR:                              "权限错误，没有相应的权限",
+	//AUTH_ERROR:                              "权限错误，没有相应的权限",
 }
 
 func ErrorString(code int) string {

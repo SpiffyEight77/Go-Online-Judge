@@ -16,4 +16,5 @@ func Response(c *gin.Context, httpCode, code int, data interface{}) {
 		"code": code,
 		"data": data,
 	})
+	return
 }
