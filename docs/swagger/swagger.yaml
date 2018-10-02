@@ -6,7 +6,7 @@ paths:
     get:
       produces:
       - application/json
-      summary: Admin Login
+      summary: User & Admin Login
     post:
       parameters:
       - description: username
@@ -21,7 +21,7 @@ paths:
         type: string
       produces:
       - application/json
-      summary: Admin Login
+      summary: User & Admin Login
   /api/v1/user/login:
     get:
       produces:
@@ -41,9 +41,15 @@ paths:
         type: string
       produces:
       - application/json
-      summary: User Login
+      summary: User Register
   /api/v1/user/profile:
     get:
+      parameters:
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: integer
       produces:
       - application/json
       summary: User Profile
@@ -56,5 +62,5 @@ paths:
         type: integer
       produces:
       - application/json
-      summary: User Login
+      summary: User Profile
 swagger: "2.0"

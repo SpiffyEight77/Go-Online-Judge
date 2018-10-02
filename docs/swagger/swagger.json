@@ -10,13 +10,13 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Admin Login"
+                "summary": "User \u0026 Admin Login"
             },
             "post": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "Admin Login",
+                "summary": "User \u0026 Admin Login",
                 "parameters": [
                     {
                         "type": "string",
@@ -46,7 +46,7 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "User Login",
+                "summary": "User Register",
                 "parameters": [
                     {
                         "type": "string",
@@ -70,13 +70,22 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "User Profile"
+                "summary": "User Profile",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
             },
             "post": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "User Login",
+                "summary": "User Profile",
                 "parameters": [
                     {
                         "type": "integer",
