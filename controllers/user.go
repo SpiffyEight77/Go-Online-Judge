@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	"online-judge/middlewares/jwt"
 	"online-judge/models"
 	"time"
+	"strconv"
 )
 
 type UserLoginRequest struct {
@@ -50,6 +52,7 @@ func PostUserLogin(c *gin.Context) {
 				models.UpdateUserLogin(token, time.Now())
 			}
 		} else {
+			fmt.Println("1")
 			code = errCode.UNAUTHORIZED
 		}
 	}
@@ -64,7 +67,7 @@ type UserRegisterRequest struct {
 
 // @Summary User Register
 // @Produce json
-// @Router /api/v1/user/login [get]
+// @Router /api/v1/user/register [get]
 func GetUserRegister(c *gin.Context) {
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
@@ -73,7 +76,7 @@ func GetUserRegister(c *gin.Context) {
 // @Produce json
 // @Param username query string true "username"
 // @Param password query string true "password"
-// @Router /api/v1/user/login [post]
+// @Router /api/v1/user/register [post]
 func PostUserRegister(c *gin.Context) {
 	req := UserRegisterRequest{}
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -98,25 +101,23 @@ func PostUserRegister(c *gin.Context) {
 
 type UserProfileRequest struct {
 	Uid      int    `form:"uid" json:"uid" biding:"required"`
-	Username string `form:"username" json:"username"`
-	Password string `form:"password" json:"password"`
-	Email    string `form:"email" json:"email"`
+	Username string `form:"username" json:"username" biding:"-"`
+	Password string `form:"password" json:"password" biding:"-"`
+	Email    string `form:"email" json:"email" biding:"-"`
 }
 
 // @Summary User Profile
 // @Produce json
 // @Param uid query int true "uid"
-// @Router /api/v1/user/profile [get]
+// @Router /api/v1/user/profile/detail [get]
 func GetUserProfile(c *gin.Context) {
-	req := UserProfileRequest{}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
-	if err, data := models.UserProfile(req.Uid); err == nil {
+	uid,_:= strconv.Atoi(c.GetHeader("uid"))
+	if err, data := models.UserProfile(uid); err == nil {
 		Response(c, http.StatusOK, errCode.SUCCESS, data)
+		return
 	} else {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
 	}
 	Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 }
@@ -124,7 +125,7 @@ func GetUserProfile(c *gin.Context) {
 // @Summary User Profile
 // @Produce json
 // @Param uid query int true "uid"
-// @Router /api/v1/user/profile [post]
+// @Router /api/v1/user/profile/detail [post]
 func PostUserProfile(c *gin.Context) {
 	req := UserProfileRequest{}
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -134,8 +135,10 @@ func PostUserProfile(c *gin.Context) {
 
 	if err := models.UpdateProfile(req); err == nil {
 		Response(c, http.StatusOK, errCode.SUCCESS, nil)
+		return
 	} else {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
 	}
 	Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 }

@@ -1,8 +1,8 @@
 package models
 
 import (
-	"online-judge/controllers"
 	"time"
+	"fmt"
 )
 
 type User struct {
@@ -39,6 +39,7 @@ func UserProfile(id int) (error, *User) {
 	return db.Model(&user).Where("id = ?", id).Scan(&user).Error, &user
 }
 
-func UpdateProfile(user controllers.UserProfileRequest) error {
+func UpdateProfile(user interface{}) error {
+	fmt.Println(user)
 	return db.Model(&user).Update().Error
 }
