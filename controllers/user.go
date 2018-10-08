@@ -1,15 +1,14 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"online-judge/common/errCode"
 	"online-judge/middlewares/jwt"
 	"online-judge/models"
-	"time"
 	"strconv"
+	"time"
 )
 
 type UserLoginRequest struct {
@@ -52,7 +51,6 @@ func PostUserLogin(c *gin.Context) {
 				models.UpdateUserLogin(token, time.Now())
 			}
 		} else {
-			fmt.Println("1")
 			code = errCode.UNAUTHORIZED
 		}
 	}
@@ -76,6 +74,7 @@ func GetUserRegister(c *gin.Context) {
 // @Produce json
 // @Param username query string true "username"
 // @Param password query string true "password"
+// @Success 200 {string} json "{"data":{"token":(string),"username":(string)},"msg":"success"}"
 // @Router /api/v1/user/register [post]
 func PostUserRegister(c *gin.Context) {
 	req := UserRegisterRequest{}
@@ -84,19 +83,29 @@ func PostUserRegister(c *gin.Context) {
 		return
 	}
 
-	if ok, data := models.CheckAuth(req.Username, req.Password); ok || data != nil {
+	ok, data := models.CheckAuth(req.Username, req.Password)
+	if ok || data != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
 	}
 
-	token, _ := jwt.GenerateToken(req.Username, req.Password)
-	if err := models.Register(req.Username, req.Password, req.Email, token); err == nil {
-		if ok, data := models.CheckAuth(req.Username, req.Password); ok {
-			Response(c, http.StatusOK, errCode.SUCCESS, data)
-			return
-		}
+	token, err := jwt.GenerateToken(req.Username, req.Password)
+	if err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
 	}
-	Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+
+	if err := models.Register(req.Username, req.Password, req.Email, token); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	ok, data = models.CheckAuth(req.Username, req.Password)
+	if !ok {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, data)
 }
 
 type UserProfileRequest struct {
@@ -109,17 +118,28 @@ type UserProfileRequest struct {
 // @Summary User Profile
 // @Produce json
 // @Param uid query int true "uid"
+// @Success 200 {string} json "{"data":{"token":(string),"username":(string)},"msg":"success"}"
 // @Router /api/v1/user/profile/detail [get]
 func GetUserProfile(c *gin.Context) {
-	uid,_:= strconv.Atoi(c.GetHeader("uid"))
-	if err, data := models.UserProfile(uid); err == nil {
-		Response(c, http.StatusOK, errCode.SUCCESS, data)
-		return
-	} else {
+	id := c.GetHeader("uid")
+	if id == "" {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
 	}
-	Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+
+	uid, err := strconv.Atoi(id)
+	if err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	err, data := models.UserProfile(uid)
+	if err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, data)
 }
 
 // @Summary User Profile
@@ -133,12 +153,10 @@ func PostUserProfile(c *gin.Context) {
 		return
 	}
 
-	if err := models.UpdateProfile(req); err == nil {
-		Response(c, http.StatusOK, errCode.SUCCESS, nil)
-		return
-	} else {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+	if err := models.UpdateProfile(req); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
-	Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
