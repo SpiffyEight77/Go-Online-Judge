@@ -160,3 +160,26 @@ func PostUserProfile(c *gin.Context) {
 
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
+
+type UserDeleteRequest struct {
+	IDList []int `form:"id_list" json:"id_list" biding:"required"`
+}
+
+// @Summary Delete User
+// @Produce json
+// @Param id_list query int true "id_list"
+// @Router /api/v1/user/delete [post]
+func PostDeleteUser(c *gin.Context) {
+	req := UserDeleteRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	if err := models.DeleteUser(req.IDList); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
