@@ -6,21 +6,25 @@ import (
 )
 
 const (
-	UserTableName    = "user"
-	ProblemTableName = "problem"
+	UserTableName     = "user"
+	ProblemTableName  = "problem"
+	ContestTableName  = "contest"
+	SolutionTableName = "solution"
 )
 
-func InitDB(dbType, dbURL string) {
+var db *gorm.DB
 
-	db, err := gorm.Open(dbType, dbURL)
+func InitDB(dbType, dbURL string) {
+	conn, err := gorm.Open(dbType, dbURL)
 	if err != nil {
 		panic(err)
 	}
+
+	db = conn
 
 	db.SingularTable(true)
 
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(10)
 	db.LogMode(true)
-
 }

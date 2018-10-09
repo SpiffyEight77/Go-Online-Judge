@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"online-judge/common/errCode"
 	"online-judge/models"
+	"strconv"
 )
 
 type ProblemRequest struct {
@@ -23,6 +24,31 @@ type ProblemRequest struct {
 // @Router /api/v1/problem/list [get]
 func GetProblems(c *gin.Context) {
 	data, err := models.ProblemsList()
+	if err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, data)
+}
+
+// @Summary Problem Detail
+// @Produce json
+// @Param problem_id query int true problem_id
+// @Router /api/v1/problem/detail [get]
+func GetProblemDetail(c *gin.Context) {
+	pid := c.Query("problem_id")
+	if pid == "" {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	problemID, err := strconv.Atoi(pid)
+	if err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	data, err := models.ProblemDetail(problemID)
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -55,6 +81,87 @@ func PostCreateProblem(c *gin.Context) {
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
 
-func PostDeleteProblem(c *gin.Context) {
+type ProblemDeleteRequest struct {
+	IDList []int `form:"id_list" json:"id_list" biding:"required"`
+}
 
+// @Summary Delete Problem
+// @Produce json
+// @Param id_list query json true "id_list"
+// @Router /api/v1/problem/delete [post]
+func PostDeleteProblem(c *gin.Context) {
+	req := ProblemDeleteRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	if err := models.DeleteProblem(req.IDList); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
+
+// @Summary Update Problem
+// @Produce json
+// @Param title query string true "title"
+// @Param author query string true "author"
+// @Param description query string true "description"
+// @Param input query string true "input"
+// @Param output query string true "output"
+// @Param sample_input query string true "sample_input"
+// @Param sample_output query string true "sample_output"
+// @Param hint query string  false "hint"
+// @Router /api/v1/problem/edit [post]
+func PostUpdateProblem(c *gin.Context) {
+	req := ProblemRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	if err := models.UpdateProblem(req); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
+
+type ProblemSubmitRequest struct {
+	PID      int    `form:"pid" json:"pid" biding:"required"`
+	UID      int    `form:"uid" json:"uid" biding:"required"`
+	Code     string `form:"code" json:"code" biding:"required"`
+	Memory   int    `form:"memory" json:"memory" biding:"required"`
+	Language int    `form:"language" json:"language" biding:"required"`
+}
+
+const (
+	C       = 1
+	Cpp     = 2
+	Java    = 3
+	Python2 = 4
+	Python3 = 5
+)
+
+// @Summary Submit Problem
+// @Produce json
+// @Param pid query json true "pid"
+// @Param uid query json true "uid"
+// @Param code query json true "code"
+// @Param memory query json true "memory"
+// @Param language query json true "language"
+// @Router /api/v1/problem/submit [post]
+func PostSubmitProblem(c *gin.Context) {
+	req := ProblemSubmitRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	if err := models.SubmitProblem(req); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
