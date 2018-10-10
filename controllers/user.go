@@ -183,3 +183,15 @@ func PostDeleteUser(c *gin.Context) {
 
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
+
+// @Summary User List
+// @Produce json
+// @Router /api/v1/user/list [get]
+func GetUserList(c *gin.Context) {
+	data, err := models.UserList()
+	if err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, data)
+}

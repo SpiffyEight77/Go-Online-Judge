@@ -33,7 +33,7 @@ func GetProblems(c *gin.Context) {
 
 // @Summary Problem Detail
 // @Produce json
-// @Param problem_id query int true problem_id
+// @Param problem_id query int true "problem_id"
 // @Router /api/v1/problem/detail [get]
 func GetProblemDetail(c *gin.Context) {
 	pid := c.Query("problem_id")

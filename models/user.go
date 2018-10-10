@@ -32,10 +32,10 @@ func UpdateUserLogin(token string, lastLogin time.Time) error {
 
 func Register(username, password, email, token string) error {
 	user := User{
-		Username: username,
-		Password: password,
-		Email: email,
-		Token: token,
+		Username:  username,
+		Password:  password,
+		Email:     email,
+		Token:     token,
 		CreatedAt: time.Now(),
 		LastLogin: time.Now(),
 	}
@@ -62,4 +62,9 @@ func DeleteUser(idlist []int) error {
 		}
 	}
 	return nil
+}
+
+func UserList() (*[]User, error) {
+	var userList []User
+	return &userList, db.Model(&User{}).Select("id,username,created_at,last_login").Scan(&userList).Error
 }
