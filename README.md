@@ -7,10 +7,10 @@ This Online Judge system for ACM-ICPC programming contest using gin framework
 
 ## Todo
 - [x] ~~login~~
-- [ ] faq
-- [ ] problem 
-- [ ] register
-- [ ] user
-- [ ] competition
+- [x] faq
+- [x] problem 
+- [x] register
+- [x] user
+- [x] competition
 - [ ] admin
 - [ ] Judger
