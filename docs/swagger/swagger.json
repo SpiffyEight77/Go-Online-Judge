@@ -5,6 +5,141 @@
         "license": {}
     },
     "paths": {
+        "/api/v1/admin/contest/create": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Contest Create",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "title",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "time",
+                        "description": "start_at",
+                        "name": "start_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "time",
+                        "description": "end_at",
+                        "name": "end_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "problem_num",
+                        "name": "problem_num",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "participant",
+                        "name": "participant",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/contest/delete": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Contest Detail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "contest_id",
+                        "name": "contest_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/contest/edit": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Contest Edit",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "title",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "time",
+                        "description": "start_at",
+                        "name": "start_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "time",
+                        "description": "end_at",
+                        "name": "end_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "status",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "problem_num",
+                        "name": "problem_num",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "participant",
+                        "name": "participant",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/api/v1/admin/user/login": {
             "get": {
                 "produces": [
@@ -35,7 +170,415 @@
                 ]
             }
         },
-        "/api/v1/user/login": {
+        "/api/v1/contest/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Contest Detail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "contest_id",
+                        "name": "contest_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/contest/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Contest List"
+            }
+        },
+        "/api/v1/news/create": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "News Create",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "content",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/news/delete": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "News Delete",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "news_id",
+                        "name": "news_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/news/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "News Detail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "news_id",
+                        "name": "news_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/news/edit": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "News Edit",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "content",
+                        "name": "content",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/news/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "News List"
+            }
+        },
+        "/api/v1/problem/delete": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete Problem",
+                "parameters": [
+                    {
+                        "type": "json",
+                        "description": "id_list",
+                        "name": "id_list",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/problem/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Problem Detail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "problem_id",
+                        "name": "problem_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/problem/edit": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Update Problem",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "title",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "author",
+                        "name": "author",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "description",
+                        "name": "description",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "input",
+                        "name": "input",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "output",
+                        "name": "output",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sample_input",
+                        "name": "sample_input",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sample_output",
+                        "name": "sample_output",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "hint",
+                        "name": "hint",
+                        "in": "query"
+                    }
+                ]
+            }
+        },
+        "/api/v1/problem/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Problems List"
+            }
+        },
+        "/api/v1/problem/new": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Create Problem",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "title",
+                        "name": "title",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "author",
+                        "name": "author",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "description",
+                        "name": "description",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "input",
+                        "name": "input",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "output",
+                        "name": "output",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sample_input",
+                        "name": "sample_input",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "sample_output",
+                        "name": "sample_output",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "hint",
+                        "name": "hint",
+                        "in": "query"
+                    }
+                ]
+            }
+        },
+        "/api/v1/problem/submit": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Submit Problem",
+                "parameters": [
+                    {
+                        "type": "json",
+                        "description": "pid",
+                        "name": "pid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "json",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "json",
+                        "description": "code",
+                        "name": "code",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "json",
+                        "description": "memory",
+                        "name": "memory",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "json",
+                        "description": "language",
+                        "name": "language",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/solution/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Solution List",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "solution_id",
+                        "name": "solution_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/solution/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Solution List"
+            }
+        },
+        "/api/v1/user/delete": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Delete User",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id_list",
+                        "name": "id_list",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/list": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User List"
+            }
+        },
+        "/api/v1/user/profile/detail": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Profile",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"data\":{\"token\":(string),\"username\":(string)},\"msg\":\"success\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "User Profile",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "uid",
+                        "name": "uid",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/register": {
             "get": {
                 "produces": [
                     "application/json"
@@ -62,39 +605,15 @@
                         "in": "query",
                         "required": true
                     }
-                ]
-            }
-        },
-        "/api/v1/user/profile": {
-            "get": {
-                "produces": [
-                    "application/json"
                 ],
-                "summary": "User Profile",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "uid",
-                        "name": "uid",
-                        "in": "query",
-                        "required": true
+                "responses": {
+                    "200": {
+                        "description": "{\"data\":{\"token\":(string),\"username\":(string)},\"msg\":\"success\"}",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
-                ]
-            },
-            "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "User Profile",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "uid",
-                        "name": "uid",
-                        "in": "query",
-                        "required": true
-                    }
-                ]
+                }
             }
         }
     }

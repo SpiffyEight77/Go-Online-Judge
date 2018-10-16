@@ -2,6 +2,99 @@ info:
   contact: {}
   license: {}
 paths:
+  /api/v1/admin/contest/create:
+    post:
+      parameters:
+      - description: title
+        in: query
+        name: title
+        required: true
+        type: string
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: integer
+      - description: start_at
+        in: query
+        name: start_at
+        required: true
+        type: time
+      - description: end_at
+        in: query
+        name: end_at
+        required: true
+        type: time
+      - description: status
+        in: query
+        name: status
+        required: true
+        type: integer
+      - description: problem_num
+        in: query
+        name: problem_num
+        required: true
+        type: integer
+      - description: participant
+        in: query
+        name: participant
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: Contest Create
+  /api/v1/admin/contest/delete:
+    post:
+      parameters:
+      - description: contest_id
+        in: query
+        name: contest_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: Contest Detail
+  /api/v1/admin/contest/edit:
+    post:
+      parameters:
+      - description: title
+        in: query
+        name: title
+        required: true
+        type: string
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: integer
+      - description: start_at
+        in: query
+        name: start_at
+        required: true
+        type: time
+      - description: end_at
+        in: query
+        name: end_at
+        required: true
+        type: time
+      - description: status
+        in: query
+        name: status
+        required: true
+        type: integer
+      - description: problem_num
+        in: query
+        name: problem_num
+        required: true
+        type: integer
+      - description: participant
+        in: query
+        name: participant
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: Contest Edit
   /api/v1/admin/user/login:
     get:
       produces:
@@ -22,7 +115,278 @@ paths:
       produces:
       - application/json
       summary: User & Admin Login
-  /api/v1/user/login:
+  /api/v1/contest/detail:
+    get:
+      parameters:
+      - description: contest_id
+        in: query
+        name: contest_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: Contest Detail
+  /api/v1/contest/list:
+    get:
+      produces:
+      - application/json
+      summary: Contest List
+  /api/v1/news/create:
+    post:
+      parameters:
+      - description: content
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      summary: News Create
+  /api/v1/news/delete:
+    post:
+      parameters:
+      - description: news_id
+        in: query
+        name: news_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: News Delete
+  /api/v1/news/detail:
+    get:
+      parameters:
+      - description: news_id
+        in: query
+        name: news_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: News Detail
+  /api/v1/news/edit:
+    post:
+      parameters:
+      - description: content
+        in: query
+        name: content
+        required: true
+        type: string
+      produces:
+      - application/json
+      summary: News Edit
+  /api/v1/news/list:
+    get:
+      produces:
+      - application/json
+      summary: News List
+  /api/v1/problem/delete:
+    post:
+      parameters:
+      - description: id_list
+        in: query
+        name: id_list
+        required: true
+        type: json
+      produces:
+      - application/json
+      summary: Delete Problem
+  /api/v1/problem/detail:
+    get:
+      parameters:
+      - description: problem_id
+        in: query
+        name: problem_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: Problem Detail
+  /api/v1/problem/edit:
+    post:
+      parameters:
+      - description: title
+        in: query
+        name: title
+        required: true
+        type: string
+      - description: author
+        in: query
+        name: author
+        required: true
+        type: string
+      - description: description
+        in: query
+        name: description
+        required: true
+        type: string
+      - description: input
+        in: query
+        name: input
+        required: true
+        type: string
+      - description: output
+        in: query
+        name: output
+        required: true
+        type: string
+      - description: sample_input
+        in: query
+        name: sample_input
+        required: true
+        type: string
+      - description: sample_output
+        in: query
+        name: sample_output
+        required: true
+        type: string
+      - description: hint
+        in: query
+        name: hint
+        type: string
+      produces:
+      - application/json
+      summary: Update Problem
+  /api/v1/problem/list:
+    get:
+      produces:
+      - application/json
+      summary: Problems List
+  /api/v1/problem/new:
+    post:
+      parameters:
+      - description: title
+        in: query
+        name: title
+        required: true
+        type: string
+      - description: author
+        in: query
+        name: author
+        required: true
+        type: string
+      - description: description
+        in: query
+        name: description
+        required: true
+        type: string
+      - description: input
+        in: query
+        name: input
+        required: true
+        type: string
+      - description: output
+        in: query
+        name: output
+        required: true
+        type: string
+      - description: sample_input
+        in: query
+        name: sample_input
+        required: true
+        type: string
+      - description: sample_output
+        in: query
+        name: sample_output
+        required: true
+        type: string
+      - description: hint
+        in: query
+        name: hint
+        type: string
+      produces:
+      - application/json
+      summary: Create Problem
+  /api/v1/problem/submit:
+    post:
+      parameters:
+      - description: pid
+        in: query
+        name: pid
+        required: true
+        type: json
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: json
+      - description: code
+        in: query
+        name: code
+        required: true
+        type: json
+      - description: memory
+        in: query
+        name: memory
+        required: true
+        type: json
+      - description: language
+        in: query
+        name: language
+        required: true
+        type: json
+      produces:
+      - application/json
+      summary: Submit Problem
+  /api/v1/solution/detail:
+    get:
+      parameters:
+      - description: solution_id
+        in: query
+        name: solution_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: Solution List
+  /api/v1/solution/list:
+    get:
+      produces:
+      - application/json
+      summary: Solution List
+  /api/v1/user/delete:
+    post:
+      parameters:
+      - description: id_list
+        in: query
+        name: id_list
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: Delete User
+  /api/v1/user/list:
+    get:
+      produces:
+      - application/json
+      summary: User List
+  /api/v1/user/profile/detail:
+    get:
+      parameters:
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"data":{"token":(string),"username":(string)},"msg":"success"}'
+          schema:
+            type: string
+      summary: User Profile
+    post:
+      parameters:
+      - description: uid
+        in: query
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      summary: User Profile
+  /api/v1/user/register:
     get:
       produces:
       - application/json
@@ -41,26 +405,10 @@ paths:
         type: string
       produces:
       - application/json
+      responses:
+        "200":
+          description: '{"data":{"token":(string),"username":(string)},"msg":"success"}'
+          schema:
+            type: string
       summary: User Register
-  /api/v1/user/profile:
-    get:
-      parameters:
-      - description: uid
-        in: query
-        name: uid
-        required: true
-        type: integer
-      produces:
-      - application/json
-      summary: User Profile
-    post:
-      parameters:
-      - description: uid
-        in: query
-        name: uid
-        required: true
-        type: integer
-      produces:
-      - application/json
-      summary: User Profile
 swagger: "2.0"

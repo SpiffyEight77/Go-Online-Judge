@@ -19,21 +19,20 @@ type Problem struct {
 	UpdatedAt    time.Time `gorm:"column:updated_at" json:"updated_at"`
 }
 
-func ProblemsList() (*[]Problem, error) {
+func (problem *Problem) ProblemsList() (*[]Problem, error) {
 	var problemList []Problem
 	return &problemList, db.Model(&problemList).Scan(&problemList).Error
 }
 
-func ProblemDetail(problemID int) (*Problem, error) {
-	var problem Problem
-	return &problem, db.Model(&Problem{}).Where(&Problem{ID: problemID}).Scan(&problem).Error
+func (problem *Problem) ProblemDetail() (*Problem, error) {
+	return problem, db.Model(&Problem{}).Where(&problem).Scan(&problem).Error
 }
 
-func CreateProblem(problem interface{}) error {
-	return db.Table(ProblemTableName).Create(&problem).Error
+func (problem *Problem) CreateProblem() error {
+	return db.Model(&Problem{}).Create(&problem).Error
 }
 
-func UpdateProblem(problem interface{}) error {
+func (problem *Problem) UpdateProblem() error {
 	return db.Model(&Problem{}).Update(&problem).Error
 }
 

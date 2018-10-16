@@ -23,7 +23,8 @@ type ProblemRequest struct {
 // @Produce json
 // @Router /api/v1/problem/list [get]
 func GetProblems(c *gin.Context) {
-	data, err := models.ProblemsList()
+	var problemList models.Problem
+	data, err := problemList.ProblemsList()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -48,7 +49,10 @@ func GetProblemDetail(c *gin.Context) {
 		return
 	}
 
-	data, err := models.ProblemDetail(problemID)
+	problem := models.Problem{
+		ID: problemID,
+	}
+	data, err := problem.ProblemDetail()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -74,7 +78,17 @@ func PostCreateProblem(c *gin.Context) {
 		return
 	}
 
-	if err := models.CreateProblem(req); err != nil {
+	problem := models.Problem{
+		Title:        req.Title,
+		Author:       req.Author,
+		Description:  req.Description,
+		Input:        req.Input,
+		Output:       req.Output,
+		SampleInput:  req.SampleInput,
+		SampleOutput: req.SampleOutput,
+		Hint:         req.Hint,
+	}
+	if err := problem.CreateProblem(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -121,7 +135,17 @@ func PostUpdateProblem(c *gin.Context) {
 		return
 	}
 
-	if err := models.UpdateProblem(req); err != nil {
+	problem := models.Problem{
+		Title:        req.Title,
+		Author:       req.Author,
+		Description:  req.Description,
+		Input:        req.Input,
+		Output:       req.Output,
+		SampleInput:  req.SampleInput,
+		SampleOutput: req.SampleOutput,
+		Hint:         req.Hint,
+	}
+	if err := problem.UpdateProblem(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
