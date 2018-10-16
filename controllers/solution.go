@@ -12,7 +12,8 @@ import (
 // @Produce json
 // @Router /api/v1/solution/list [get]
 func GetSolutionList(c *gin.Context) {
-	data, err := models.SolutionList()
+	var solutionList models.Solution
+	data, err := solutionList.SolutionList()
 	if err != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
@@ -37,7 +38,10 @@ func GetSolutionDetail(c *gin.Context) {
 		return
 	}
 
-	data, err := models.SolutionDetail(solutionID)
+	solution := models.Solution{
+		SID: solutionID,
+	}
+	data, err := solution.SolutionDetail()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return

@@ -15,12 +15,11 @@ func SubmitProblem(solution interface{}) error {
 	return db.Model(&Solution{}).Create(&solution).Error
 }
 
-func SolutionList() (*[]Solution, error) {
+func (solution *Solution) SolutionList() (*[]Solution, error) {
 	var solutionList []Solution
 	return &solutionList, db.Model(&Solution{}).Scan(&solutionList).Error
 }
 
-func SolutionDetail(solutionID int) (*Solution, error) {
-	var solution Solution
-	return &solution, db.Model(&Solution{}).Where(&Solution{SID: solutionID}).Scan(&solution).Error
+func (solution *Solution) SolutionDetail() (*Solution, error) {
+	return solution, db.Model(&Solution{}).Where(&solution).Scan(&solution).Error
 }
