@@ -1,0 +1,42 @@
+version: '3'
+services:
+
+  redis:
+    image: "redis:alpine"
+
+  mysql:
+    image: "mysql:5.7"
+    environment:
+      MYSQL_DATABASE: blog
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: rootroot
+    ports:
+    - "8000:3306"
+
+  web1:
+    build: .
+    volumes:
+      - .:/gin-sample
+    ports:
+      - "4001:4000"
+    links:
+      - redis
+      - mysql
+
+  web2:
+    build: .
+    volumes:
+      - .:/gin-sample
+    ports:
+      - "4002:4000"
+    links:
+      - redis
+      - mysql
+
+  nginx:
+    image: nginx:gin-sample
+    links:
+      - web1
+      - web2
+    ports:
+      - "4040:80"
