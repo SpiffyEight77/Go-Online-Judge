@@ -1,8 +1,6 @@
 package routers
 
 import (
-	"github.com/gin-contrib/sessions"
-	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -16,9 +14,6 @@ func InitRouter() *gin.Engine {
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	store := cookie.NewStore([]byte("secret"))
-	router.Use(sessions.Sessions("mysession", store))
-
 	v1 := router.Group("/api/v1")
 	{
 		user := v1.Group("/user")
@@ -27,15 +22,72 @@ func InitRouter() *gin.Engine {
 			user.POST("/login", controllers.PostUserLogin)
 			user.GET("/register", controllers.GetUserRegister)
 			user.POST("/register", controllers.PostUserRegister)
-			user.GET("/profile", controllers.PostUserProfile).Use(middlewares.JWT())
-			user.POST("/profile", controllers.PostUserProfile).Use(middlewares.JWT())
+
+			profile := user.Group("/profile").Use(middlewares.JWT())
+			{
+				profile.GET("/detail", controllers.GetUserProfile)
+				profile.POST("/edit", controllers.PostUserProfile)
+			}
 		}
+		problem := v1.Group("/problem")
+		{
+			problem.GET("/list", controllers.GetProblems)
+			problem.GET("/detail", controllers.GetProblemDetail)
+			problem.POST("/submit", controllers.PostSubmitProblem)
+		}
+		news := v1.Group("/news")
+		{
+			news.GET("/list", controllers.GetNewsList)
+			news.GET("/detail", controllers.GetNewsDetail)
+		}
+		contest := v1.Group("/contest")
+		{
+			contest.GET("/list", controllers.GetContestList)
+			contest.GET("/detail", controllers.GetContestDetail)
+		}
+		solution := v1.Group("/solution")
+		{
+			solution.GET("/list", controllers.GetSolutionList)
+			solution.GET("/detail", controllers.GetSolutionDetail)
+		}
+
 		administration := v1.Group("/admin")
 		{
 			user := administration.Group("/user")
 			{
+				user.GET("/list", controllers.GetUserList)
 				user.GET("/login", controllers.GetUserLogin)
 				user.POST("/login", controllers.PostUserLogin)
+				user.POST("/delete", controllers.PostDeleteUser)
+			}
+			problem := administration.Group("/problem")
+			{
+				problem.GET("/list", controllers.GetProblems)
+				problem.GET("/detail", controllers.GetProblemDetail)
+				problem.POST("/delete", controllers.PostDeleteProblem)
+				problem.POST("/new", controllers.PostCreateProblem)
+				problem.POST("/edit", controllers.PostUpdateProblem)
+			}
+			news := administration.Group("/news")
+			{
+				news.GET("/list", controllers.GetNewsList)
+				news.GET("/detail", controllers.GetNewsDetail)
+				news.POST("/edit", controllers.PostNewsEdit)
+				news.POST("/create", controllers.PostNewsCreate)
+				news.POST("/delete", controllers.PostNewsDelete)
+			}
+			contest := administration.Group("/contest")
+			{
+				contest.GET("/list", controllers.GetContestList)
+				contest.GET("/detail", controllers.GetContestDetail)
+				contest.POST("/create", controllers.PostCreateContest)
+				contest.POST("/edit", controllers.PostUpdateContest)
+				contest.POST("/delete", controllers.PostDeleteContest)
+			}
+			solution := administration.Group("/solution")
+			{
+				solution.GET("/list", controllers.GetSolutionList)
+				solution.GET("/detail", controllers.GetSolutionDetail)
 			}
 		}
 	}

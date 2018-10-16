@@ -29,7 +29,10 @@ func init() {
 	dbType := viper.GetString("database.type")
 	dbURL := viper.GetString("database.url")
 	models.InitDB(dbType, dbURL)
-	models.InitRedis()
+
+	if err := models.InitRedis(); err != nil {
+		panic(err)
+	}
 }
 
 func main() {

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -16,40 +15,28 @@ type User struct {
 	LastLogin time.Time `gorm:"column:last_login" json:"last_login"`
 }
 
-func CheckAuth(username, password string) (bool, *User) {
-	var user User
-	db.Model(&user).Where(User{Username: username, Password: password}).First(&user)
+func (user *User) CheckAuth() (bool, *User) {
+	db.Model(&user).Where(&user).First(&user)
 	if user.ID > 0 {
-		return true, &user
+		return true, user
 	}
 	return false, nil
 }
 
-func UpdateUserLogin(token string, lastLogin time.Time) error {
-	var user User
-	return db.Model(&user).Update(User{Token: token, LastLogin: lastLogin}).Error
+func (user *User) Register() error {
+	return db.Model(&User{}).Create(&user).Error
 }
 
-func Register(username, password, email, token string) error {
-	user := User{
-		Username:  username,
-		Password:  password,
-		Email:     email,
-		Token:     token,
-		CreatedAt: time.Now(),
-		LastLogin: time.Now(),
-	}
-	return db.Model(&user).Create(&user).Error
+func (user *User) UpdateUserLogin() error {
+	return db.Model(&user).Update(&user).Error
 }
 
-func UserProfile(id int) (error, *User) {
-	var user User
-	return db.Model(&user).Where("id = ?", id).Scan(&user).Error, &user
+func (user *User) UserProfile() (*User, error) {
+	return user, db.Model(&User{}).Where(&user).Scan(&user).Error
 }
 
-func UpdateProfile(user interface{}) error {
-	fmt.Println(user)
-	return db.Model(&user).Update().Error
+func (user *User) UpdateProfile() error {
+	return db.Model(&User{}).Update(&user).Error
 }
 
 func DeleteUser(idlist []int) error {
@@ -64,7 +51,7 @@ func DeleteUser(idlist []int) error {
 	return nil
 }
 
-func UserList() (*[]User, error) {
+func (user *User) UserList() (*[]User, error) {
 	var userList []User
 	return &userList, db.Model(&User{}).Select("id,username,created_at,last_login").Scan(&userList).Error
 }

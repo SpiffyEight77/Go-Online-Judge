@@ -40,15 +40,21 @@ func PostUserLogin(c *gin.Context) {
 
 	data := make(map[string]interface{})
 	code := errCode.BADREQUEST
+	user := models.User{
+		Username: req.Username,
+		Password: req.Password,
+	}
 
 	if ok {
-		if isExist, data := models.CheckAuth(req.Username, req.Password); isExist == true {
+		if isExist, data := user.CheckAuth(); isExist == true {
 			if token, err := jwt.GenerateToken(req.Username, req.Password); err != nil {
 				code = errCode.UNAUTHORIZED
 			} else {
 				data.Token = token
 				code = errCode.SUCCESS
-				models.UpdateUserLogin(token, time.Now())
+				user.Token = token
+				user.LastLogin = time.Now()
+				user.UpdateUserLogin()
 			}
 		} else {
 			code = errCode.UNAUTHORIZED
@@ -83,7 +89,15 @@ func PostUserRegister(c *gin.Context) {
 		return
 	}
 
-	ok, data := models.CheckAuth(req.Username, req.Password)
+	user := models.User{
+		Username:  req.Username,
+		Password:  req.Password,
+		Email:     req.Email,
+		CreatedAt: time.Now(),
+		LastLogin: time.Now(),
+	}
+
+	ok, data := user.CheckAuth()
 	if ok || data != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
@@ -95,12 +109,13 @@ func PostUserRegister(c *gin.Context) {
 		return
 	}
 
-	if err := models.Register(req.Username, req.Password, req.Email, token); err != nil {
+	user.Token = token
+	if err := user.Register(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
 
-	ok, data = models.CheckAuth(req.Username, req.Password)
+	ok, data = user.CheckAuth()
 	if !ok {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -133,7 +148,10 @@ func GetUserProfile(c *gin.Context) {
 		return
 	}
 
-	err, data := models.UserProfile(uid)
+	user := models.User{
+		ID: uid,
+	}
+	data, err := user.UserProfile()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -153,7 +171,13 @@ func PostUserProfile(c *gin.Context) {
 		return
 	}
 
-	if err := models.UpdateProfile(req); err != nil {
+	user := models.User{
+		ID:       req.Uid,
+		Username: req.Username,
+		Password: req.Password,
+		Email:    req.Email,
+	}
+	if err := user.UpdateProfile(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -188,7 +212,8 @@ func PostDeleteUser(c *gin.Context) {
 // @Produce json
 // @Router /api/v1/user/list [get]
 func GetUserList(c *gin.Context) {
-	data, err := models.UserList()
+	var userList models.User
+	data, err := userList.UserList()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
