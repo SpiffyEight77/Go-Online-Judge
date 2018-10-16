@@ -14,24 +14,23 @@ type Contest struct {
 	Participant int       `gorm:"column:participant" json:"participant"`
 }
 
-func ContestList() (*[]Contest, error) {
+func (contest *Contest) ContestList() (*[]Contest, error) {
 	var contestList []Contest
 	return &contestList, db.Model(&Contest{}).Scan(&contestList).Error
 }
 
-func ContestDetail(contestID int) (*Contest, error) {
-	var contest Contest
-	return &contest, db.Model(&Contest{}).Where(&Contest{ID: contestID}).Scan(&contest).Error
+func (contest *Contest) ContestDetail() (*Contest, error) {
+	return contest, db.Model(&Contest{}).Where(&contest).Scan(&contest).Error
 }
 
-func ContestCreate(contest interface{}) error {
+func (contest *Contest) ContestCreate() error {
 	return db.Model(&Contest{}).Create(&contest).Error
 }
 
-func ContestDelete(contestID int) error {
-	return db.Model(&Contest{}).Delete(&Contest{ID: contestID}).Error
+func (contest *Contest) ContestDelete() error {
+	return db.Model(&Contest{}).Delete(&contest).Error
 }
 
-func ContestUpdate(contest interface{}) error {
+func (contest *Contest) ContestUpdate() error {
 	return db.Model(&Contest{}).Update(&contest).Error
 }

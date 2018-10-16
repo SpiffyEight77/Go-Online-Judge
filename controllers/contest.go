@@ -13,7 +13,8 @@ import (
 // @Produce json
 // @Router /api/v1/contest/list [get]
 func GetContestList(c *gin.Context) {
-	data, err := models.ContestList()
+	var contestList models.Contest
+	data, err := contestList.ContestList()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -38,7 +39,10 @@ func GetContestDetail(c *gin.Context) {
 		return
 	}
 
-	data, err := models.ContestDetail(contestID)
+	contest := models.Contest{
+		ID: contestID,
+	}
+	data, err := contest.ContestDetail()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -73,7 +77,14 @@ func PostCreateContest(c *gin.Context) {
 		return
 	}
 
-	if err := models.ContestCreate(req); err != nil {
+	contest := models.Contest{
+		Title:       req.Title,
+		UID:         req.UID,
+		StartAt:     req.StartAt,
+		ProblemNum:  req.ProblemNum,
+		Participant: req.Participant,
+	}
+	if err := contest.ContestCreate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -97,7 +108,10 @@ func PostDeleteContest(c *gin.Context) {
 		return
 	}
 
-	if err := models.ContestDelete(contestID); err != nil {
+	contest := models.Contest{
+		ID: contestID,
+	}
+	if err := contest.ContestDelete(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -121,7 +135,14 @@ func PostUpdateContest(c *gin.Context) {
 		return
 	}
 
-	if err := models.ContestUpdate(req); err != nil {
+	contest := models.Contest{
+		Title:       req.Title,
+		UID:         req.UID,
+		StartAt:     req.StartAt,
+		ProblemNum:  req.ProblemNum,
+		Participant: req.Participant,
+	}
+	if err := contest.ContestUpdate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
