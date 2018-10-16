@@ -8,24 +8,23 @@ type News struct {
 	CreatedAt time.Time `form:"column:created_at" json:"created_at"`
 }
 
-func NewsList() (*[]News, error) {
+func (news *News) NewsList() (*[]News, error) {
 	var newsList []News
 	return &newsList, db.Model(&News{}).Scan(&newsList).Error
 }
 
-func NewsDetail(newsID int) (News, error) {
-	var news News
-	return news, db.Model(&News{}).Where(&News{ID: newsID}).Scan(&news).Error
+func (news *News) NewsDetail() (*News, error) {
+	return news, db.Model(&News{}).Where(&news).Scan(&news).Error
 }
 
-func NewsUpdate(news interface{}) error {
+func (news *News) NewsUpdate() error {
 	return db.Model(&News{}).Update(&news).Error
 }
 
-func NewsCreate(news interface{}) error {
+func (news *News) NewsCreate() error {
 	return db.Model(&News{}).Create(&news).Error
 }
 
-func NewsDelete(newsID int) error {
-	return db.Model(&News{}).Delete(&News{ID: newsID}).Error
+func (news *News) NewsDelete() error {
+	return db.Model(&News{}).Delete(&news).Error
 }

@@ -12,7 +12,8 @@ import (
 // @Produce json
 // @Router /api/v1/news/list [get]
 func GetNewsList(c *gin.Context) {
-	data, err := models.NewsList()
+	var newsList models.News
+	data, err := newsList.NewsList()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -37,7 +38,10 @@ func GetNewsDetail(c *gin.Context) {
 		return
 	}
 
-	data, err := models.NewsDetail(newsID)
+	news := models.News{
+		ID: newsID,
+	}
+	data, err := news.NewsDetail()
 	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -60,7 +64,10 @@ func PostNewsEdit(c *gin.Context) {
 		return
 	}
 
-	if err := models.NewsUpdate(req); err != nil {
+	news := models.News{
+		Content: req.Content,
+	}
+	if err := news.NewsUpdate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -78,7 +85,10 @@ func PostNewsCreate(c *gin.Context) {
 		return
 	}
 
-	if err := models.NewsCreate(req); err != nil {
+	news := models.News{
+		Content: req.Content,
+	}
+	if err := news.NewsCreate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -102,7 +112,10 @@ func PostNewsDelete(c *gin.Context) {
 		return
 	}
 
-	if err := models.NewsDelete(newsID); err != nil {
+	news := models.News{
+		ID: newsID,
+	}
+	if err := news.NewsDelete(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
