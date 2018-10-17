@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"github.com/astaxie/beego/logs"
+	"strconv"
+	"time"
+)
 
 type Problem struct {
 	ID           int       `gorm:"column:id" json:"id"`
@@ -21,26 +26,80 @@ type Problem struct {
 
 func (problem *Problem) ProblemsList() (*[]Problem, error) {
 	var problemList []Problem
-	return &problemList, db.Model(&problemList).Scan(&problemList).Error
+	key := "problemList"
+	if Exists(key) {
+		data, err := Get(key)
+		if err != nil {
+			logs.Error(err)
+			return nil, err
+		}
+		json.Unmarshal(data, &problemList)
+		return &problemList, nil
+	}
+
+	err := db.Model(&problemList).Scan(&problemList).Error
+	if err != nil {
+		return nil, err
+	}
+	Set(key, problemList, 3600)
+	return &problemList, nil
 }
 
 func (problem *Problem) ProblemDetail() (*Problem, error) {
-	return problem, db.Model(&Problem{}).Where(&problem).Scan(&problem).Error
+	key := "problemID" + strconv.Itoa(problem.ID)
+	if Exists(key) {
+		data, err := Get(key)
+		if err != nil {
+			logs.Error(err)
+			return nil, err
+		}
+		json.Unmarshal(data, &problem)
+		return problem, nil
+	}
+
+	err := db.Model(&Problem{}).Where(&problem).Scan(&problem).Error
+	if err != nil {
+		return nil, err
+	}
+	Set(key, problem, 3600)
+	return problem, nil
 }
 
 func (problem *Problem) CreateProblem() error {
+	_, err := Delete("problemList")
+	if err != nil {
+		return err
+	}
+
 	return db.Model(&Problem{}).Create(&problem).Error
 }
 
 func (problem *Problem) UpdateProblem() error {
+	_, err := Delete("problemList")
+	if err != nil {
+		return err
+	}
+
+	key := "problemID" + strconv.Itoa(problem.ID)
+	_, err = Delete(key)
+	if err != nil {
+		return err
+	}
 	return db.Model(&Problem{}).Update(&problem).Error
 }
 
-func DeleteProblem(idlist []int) error {
-	problem := Problem{
-		IDList: idlist,
+func (problem *Problem) DeleteProblem() error {
+	_, err := Delete("problemList")
+	if err != nil {
+		return err
 	}
+
 	for k, _ := range problem.IDList {
+		key := "problemID" + strconv.Itoa(problem.IDList[k])
+		_, err = Delete(key)
+		if err != nil {
+			return err
+		}
 		if err := db.Model(&problem).Delete(&problem.IDList[k]).Error; err != nil {
 			return err
 		}

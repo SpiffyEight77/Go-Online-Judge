@@ -200,7 +200,10 @@ func PostDeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err := models.DeleteUser(req.IDList); err != nil {
+	user := models.User{
+		IDList: req.IDList,
+	}
+	if err := user.DeleteUser(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}

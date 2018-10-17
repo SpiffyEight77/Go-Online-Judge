@@ -1,6 +1,9 @@
 package models
 
 import (
+	"encoding/json"
+	"github.com/astaxie/beego/logs"
+	"strconv"
 	"time"
 )
 
@@ -28,22 +31,63 @@ func (user *User) Register() error {
 }
 
 func (user *User) UpdateUserLogin() error {
+	_, err := Delete("userList")
+	if err != nil {
+		return err
+	}
+
+	_, err = Delete("userID" + strconv.Itoa(user.ID))
+	if err != nil {
+		return nil
+	}
 	return db.Model(&user).Update(&user).Error
 }
 
 func (user *User) UserProfile() (*User, error) {
-	return user, db.Model(&User{}).Where(&user).Scan(&user).Error
+	key := "userID" + strconv.Itoa(user.ID)
+	if Exists(key) {
+		data, err := Get(key)
+		if err != nil {
+			logs.Error(err)
+			return nil, err
+		}
+		json.Unmarshal(data, &user)
+		return user, nil
+	}
+
+	err := db.Model(&User{}).Where(&user).Scan(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	Set(key, user, 3600)
+	return user, nil
 }
 
 func (user *User) UpdateProfile() error {
+	_, err := Delete("userList")
+	if err != nil {
+		return err
+	}
+
+	_, err = Delete("userID" + strconv.Itoa(user.ID))
+	if err != nil {
+		return nil
+	}
 	return db.Model(&User{}).Update(&user).Error
 }
 
-func DeleteUser(idlist []int) error {
-	user := User{
-		IDList: idlist,
+func (user *User) DeleteUser() error {
+
+	_, err := Delete("userList")
+	if err != nil {
+		return err
 	}
+
 	for k, _ := range user.IDList {
+		_, err = Delete("userID" + strconv.Itoa(user.IDList[k]))
+		if err != nil {
+			return nil
+		}
 		if err := db.Model(&user).Delete(&user.IDList[k]).Error; err != nil {
 			return err
 		}
@@ -53,5 +97,22 @@ func DeleteUser(idlist []int) error {
 
 func (user *User) UserList() (*[]User, error) {
 	var userList []User
-	return &userList, db.Model(&User{}).Select("id,username,created_at,last_login").Scan(&userList).Error
+
+	key := "userList"
+	if Exists(key) {
+		data, err := Get(key)
+		if err != nil {
+			logs.Error(err)
+			return nil, err
+		}
+		json.Unmarshal(data, &userList)
+		return &userList, nil
+	}
+
+	err := db.Model(&User{}).Scan(&userList).Error
+	if err != nil {
+		return nil, err
+	}
+	Set(key, userList, 3600)
+	return &userList, nil
 }

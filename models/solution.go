@@ -11,7 +11,7 @@ type Solution struct {
 	Status   int    `gorm:"column:status" json:"status"`
 }
 
-func SubmitProblem(solution interface{}) error {
+func (solution *Solution) SubmitProblem() error {
 	return db.Model(&Solution{}).Create(&solution).Error
 }
 

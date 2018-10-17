@@ -110,7 +110,10 @@ func PostDeleteProblem(c *gin.Context) {
 		return
 	}
 
-	if err := models.DeleteProblem(req.IDList); err != nil {
+	problem := models.Problem{
+		IDList: req.IDList,
+	}
+	if err := problem.DeleteProblem(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -183,7 +186,14 @@ func PostSubmitProblem(c *gin.Context) {
 		return
 	}
 
-	if err := models.SubmitProblem(req); err != nil {
+	solution := models.Solution{
+		PID:      req.PID,
+		UID:      req.UID,
+		Code:     req.Code,
+		Memory:   req.Memory,
+		Language: req.Language,
+	}
+	if err := solution.SubmitProblem(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}

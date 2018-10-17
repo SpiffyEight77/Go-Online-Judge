@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"encoding/json"
+	"github.com/astaxie/beego/logs"
+	"strconv"
+	"time"
+)
 
 type Contest struct {
 	ID          int       `gorm:"column:id" json:"id"`
@@ -16,21 +21,78 @@ type Contest struct {
 
 func (contest *Contest) ContestList() (*[]Contest, error) {
 	var contestList []Contest
-	return &contestList, db.Model(&Contest{}).Scan(&contestList).Error
+
+	key := "contestList"
+	if Exists(key) {
+		data, err := Get(key)
+		if err != nil {
+			logs.Error(err)
+			return nil, err
+		}
+		json.Unmarshal(data, &contestList)
+		return &contestList, nil
+	}
+
+	err := db.Model(&Contest{}).Scan(&contestList).Error
+	if err != nil {
+		return nil, err
+	}
+	Set(key, contestList, 3600)
+	return &contestList, nil
 }
 
 func (contest *Contest) ContestDetail() (*Contest, error) {
-	return contest, db.Model(&Contest{}).Where(&contest).Scan(&contest).Error
+	key := "contestID" + strconv.Itoa(contest.ID)
+	if Exists(key) {
+		data, err := Get(key)
+		if err != nil {
+			logs.Error(err)
+			return nil, err
+		}
+		json.Unmarshal(data, &contest)
+		return contest, nil
+	}
+
+	err := db.Model(&Contest{}).Where(&contest).Scan(&contest).Error
+	if err != nil {
+		return nil, err
+	}
+	Set(key, contest, 3600)
+	return contest, nil
 }
 
 func (contest *Contest) ContestCreate() error {
+	_, err := Delete("contestList")
+	if err != nil {
+		return err
+	}
 	return db.Model(&Contest{}).Create(&contest).Error
 }
 
 func (contest *Contest) ContestDelete() error {
+	_, err := Delete("contestList")
+	if err != nil {
+		return err
+	}
+
+	key := "contestID" + strconv.Itoa(contest.ID)
+	_, err = Delete(key)
+	if err != nil {
+		return err
+	}
 	return db.Model(&Contest{}).Delete(&contest).Error
 }
 
 func (contest *Contest) ContestUpdate() error {
+	_, err := Delete("contestList")
+	if err != nil {
+		return err
+	}
+
+	key := "contestID" + strconv.Itoa(contest.ID)
+	_, err = Delete(key)
+	if err != nil {
+		return err
+	}
 	return db.Model(&Contest{}).Update(&contest).Error
 }
