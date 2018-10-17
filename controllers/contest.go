@@ -84,7 +84,7 @@ func PostCreateContest(c *gin.Context) {
 		ProblemNum:  req.ProblemNum,
 		Participant: req.Participant,
 	}
-	if err := contest.ContestCreate(); err != nil {
+	if err := contest.ContestCreateAndUpdate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -142,7 +142,7 @@ func PostUpdateContest(c *gin.Context) {
 		ProblemNum:  req.ProblemNum,
 		Participant: req.Participant,
 	}
-	if err := contest.ContestUpdate(); err != nil {
+	if err := contest.ContestCreateAndUpdate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}

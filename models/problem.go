@@ -65,19 +65,14 @@ func (problem *Problem) ProblemDetail() (*Problem, error) {
 	return problem, nil
 }
 
-func (problem *Problem) CreateProblem() error {
+func (problem *Problem) CreateAndUpdateProblem() error {
 	_, err := Delete("problemList")
 	if err != nil {
 		return err
 	}
 
-	return db.Model(&Problem{}).Create(&problem).Error
-}
-
-func (problem *Problem) UpdateProblem() error {
-	_, err := Delete("problemList")
-	if err != nil {
-		return err
+	if problem.ID == 0 {
+		return db.Model(&Problem{}).Create(&problem).Error
 	}
 
 	key := "problemID" + strconv.Itoa(problem.ID)

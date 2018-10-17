@@ -53,10 +53,14 @@ func (news *News) NewsDetail() (*News, error) {
 	return news, nil
 }
 
-func (news *News) NewsUpdate() error {
+func (news *News) NewsCreateAndUpdate() error {
 	_, err := Delete("newsList")
 	if err != nil {
 		return err
+	}
+
+	if news.ID == 0 {
+		return db.Model(&News{}).Create(&news).Error
 	}
 
 	key := "newsID" + strconv.Itoa(news.ID)
@@ -65,14 +69,6 @@ func (news *News) NewsUpdate() error {
 		return err
 	}
 	return db.Model(&News{}).Update(&news).Error
-}
-
-func (news *News) NewsCreate() error {
-	_, err := Delete("newsList")
-	if err != nil {
-		return err
-	}
-	return db.Model(&News{}).Create(&news).Error
 }
 
 func (news *News) NewsDelete() error {

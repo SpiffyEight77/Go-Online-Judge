@@ -67,7 +67,7 @@ func PostNewsEdit(c *gin.Context) {
 	news := models.News{
 		Content: req.Content,
 	}
-	if err := news.NewsUpdate(); err != nil {
+	if err := news.NewsCreateAndUpdate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
@@ -88,7 +88,7 @@ func PostNewsCreate(c *gin.Context) {
 	news := models.News{
 		Content: req.Content,
 	}
-	if err := news.NewsCreate(); err != nil {
+	if err := news.NewsCreateAndUpdate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}

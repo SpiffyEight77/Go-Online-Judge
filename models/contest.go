@@ -61,12 +61,22 @@ func (contest *Contest) ContestDetail() (*Contest, error) {
 	return contest, nil
 }
 
-func (contest *Contest) ContestCreate() error {
+func (contest *Contest) ContestCreateAndUpdate() error {
 	_, err := Delete("contestList")
 	if err != nil {
 		return err
 	}
-	return db.Model(&Contest{}).Create(&contest).Error
+
+	if contest.ID == 0 {
+		return db.Model(&Contest{}).Create(&contest).Error
+	}
+
+	key := "contestID" + strconv.Itoa(contest.ID)
+	_, err = Delete(key)
+	if err != nil {
+		return err
+	}
+	return db.Model(&Contest{}).Update(&contest).Error
 }
 
 func (contest *Contest) ContestDelete() error {
@@ -81,18 +91,4 @@ func (contest *Contest) ContestDelete() error {
 		return err
 	}
 	return db.Model(&Contest{}).Delete(&contest).Error
-}
-
-func (contest *Contest) ContestUpdate() error {
-	_, err := Delete("contestList")
-	if err != nil {
-		return err
-	}
-
-	key := "contestID" + strconv.Itoa(contest.ID)
-	_, err = Delete(key)
-	if err != nil {
-		return err
-	}
-	return db.Model(&Contest{}).Update(&contest).Error
 }
