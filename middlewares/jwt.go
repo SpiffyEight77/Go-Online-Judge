@@ -2,11 +2,11 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"online-judge/common/errCode"
+	"online-judge/controllers"
 	"online-judge/middlewares/jwt"
 	"time"
-	"online-judge/controllers"
-	"net/http"
 )
 
 func JWT() gin.HandlerFunc {
@@ -28,7 +28,7 @@ func JWT() gin.HandlerFunc {
 		}
 
 		if code != errCode.SUCCESS {
-			controllers.Response(c,http.StatusUnauthorized,errCode.UNAUTHORIZED,nil)
+			controllers.Response(c, http.StatusUnauthorized, errCode.UNAUTHORIZED, nil)
 			c.Abort()
 			return
 		}

@@ -1,16 +1,26 @@
 package routers
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"online-judge/controllers"
 	_ "online-judge/docs"
 	"online-judge/middlewares"
+	"time"
 )
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+		AllowAllOrigins:  true,
+	}))
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -65,8 +75,8 @@ func InitRouter() *gin.Engine {
 				problem.GET("/list", controllers.GetProblems)
 				problem.GET("/detail", controllers.GetProblemDetail)
 				problem.POST("/delete", controllers.PostDeleteProblem)
-				problem.POST("/new", controllers.PostCreateProblem)
-				problem.POST("/edit", controllers.PostUpdateProblem)
+				//problem.POST("/new", controllers.PostCreateProblem)
+				//problem.POST("/edit", controllers.PostUpdateProblem)
 			}
 			news := administration.Group("/news")
 			{

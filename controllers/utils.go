@@ -8,7 +8,6 @@ import (
 func Response(c *gin.Context, httpCode, code int, data interface{}) {
 	if httpCode == 500 {
 		c.Status(500)
-		return
 	}
 
 	c.JSON(httpCode, gin.H{
@@ -16,5 +15,4 @@ func Response(c *gin.Context, httpCode, code int, data interface{}) {
 		"code": code,
 		"data": data,
 	})
-	return
 }

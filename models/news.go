@@ -9,27 +9,28 @@ import (
 
 type News struct {
 	ID        int       `form:"column:id" json:"id"`
+	Title     string    `form:"column:title" json:"title"`
 	Content   string    `form:"column:content" json:"content"`
 	CreatedAt time.Time `form:"column:created_at" json:"created_at"`
 }
 
 func (news *News) NewsList() (*[]News, error) {
 	var newsList []News
-	key := "newsList"
-	if Exists(key) {
-		data, err := Get(key)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
-		}
-		json.Unmarshal(data, &newsList)
-	}
+	//key := "newsList"
+	//if Exists(key) {
+	//	data, err := Get(key)
+	//	if err != nil {
+	//		logs.Error(err)
+	//		return nil, err
+	//	}
+	//	json.Unmarshal(data, &newsList)
+	//}
 
 	err := db.Model(&News{}).Scan(&newsList).Error
 	if err != nil {
 		return nil, err
 	}
-	Set(key, newsList, 3600)
+	//Set(key, newsList, 3600)
 	return &newsList, nil
 }
 

@@ -71,29 +71,29 @@ func GetProblemDetail(c *gin.Context) {
 // @Param sample_output query string true "sample_output"
 // @Param hint query string  false "hint"
 // @Router /api/v1/problem/new [post]
-func PostCreateProblem(c *gin.Context) {
-	req := ProblemRequest{}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
-
-	problem := models.Problem{
-		Title:        req.Title,
-		Author:       req.Author,
-		Description:  req.Description,
-		Input:        req.Input,
-		Output:       req.Output,
-		SampleInput:  req.SampleInput,
-		SampleOutput: req.SampleOutput,
-		Hint:         req.Hint,
-	}
-	if err := problem.CreateProblem(); err != nil {
-		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
-		return
-	}
-	Response(c, http.StatusOK, errCode.SUCCESS, nil)
-}
+//func PostCreateProblem(c *gin.Context) {
+//	req := ProblemRequest{}
+//	if err := c.ShouldBindJSON(&req); err != nil {
+//		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+//		return
+//	}
+//
+//	problem := models.Problem{
+//		Title:        req.Title,
+//		Author:       req.Author,
+//		Description:  req.Description,
+//		Input:        req.Input,
+//		Output:       req.Output,
+//		SampleInput:  req.SampleInput,
+//		SampleOutput: req.SampleOutput,
+//		Hint:         req.Hint,
+//	}
+//	if err := problem.CreateProblem(); err != nil {
+//		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+//		return
+//	}
+//	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+//}
 
 type ProblemDeleteRequest struct {
 	IDList []int `form:"id_list" json:"id_list" biding:"required"`
@@ -131,29 +131,29 @@ func PostDeleteProblem(c *gin.Context) {
 // @Param sample_output query string true "sample_output"
 // @Param hint query string  false "hint"
 // @Router /api/v1/problem/edit [post]
-func PostUpdateProblem(c *gin.Context) {
-	req := ProblemRequest{}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
-
-	problem := models.Problem{
-		Title:        req.Title,
-		Author:       req.Author,
-		Description:  req.Description,
-		Input:        req.Input,
-		Output:       req.Output,
-		SampleInput:  req.SampleInput,
-		SampleOutput: req.SampleOutput,
-		Hint:         req.Hint,
-	}
-	if err := problem.UpdateProblem(); err != nil {
-		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
-		return
-	}
-	Response(c, http.StatusOK, errCode.SUCCESS, nil)
-}
+//func PostUpdateProblem(c *gin.Context) {
+//	req := ProblemRequest{}
+//	if err := c.ShouldBindJSON(&req); err != nil {
+//		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+//		return
+//	}
+//
+//	problem := models.Problem{
+//		Title:        req.Title,
+//		Author:       req.Author,
+//		Description:  req.Description,
+//		Input:        req.Input,
+//		Output:       req.Output,
+//		SampleInput:  req.SampleInput,
+//		SampleOutput: req.SampleOutput,
+//		Hint:         req.Hint,
+//	}
+//	if err := problem.UpdateProblem(); err != nil {
+//		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+//		return
+//	}
+//	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+//}
 
 type ProblemSubmitRequest struct {
 	PID      int    `form:"pid" json:"pid" biding:"required"`
