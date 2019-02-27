@@ -2,6 +2,7 @@ package models
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego/logs"
 	"strconv"
 	"time"
@@ -9,7 +10,8 @@ import (
 
 type User struct {
 	ID        int       `gorm:"column:id" json:"uid"`
-	IDList    []int     `gorm:"column:id_list" json:"id_list"`
+	//IDList    []int     `gorm:"column:id_list" json:"id_list"`
+	Nickname  string    `gorm:"column:nickname" json:"nickname"`
 	Username  string    `gorm:"column:username" json:"username"`
 	Email     string    `gorm:"column:email" json:"email"`
 	Password  string    `gorm:"column:password" json:"password"`
@@ -19,8 +21,9 @@ type User struct {
 }
 
 func (user *User) CheckAuth() (bool, *User) {
-	db.Model(&user).Where(&user).First(&user)
+	db.Where("username = ?", user.Username).Find(&user)
 	if user.ID > 0 {
+		fmt.Println(user.ID)
 		return true, user
 	}
 	return false, nil
@@ -76,24 +79,24 @@ func (user *User) UpdateProfile() error {
 	return db.Model(&User{}).Update(&user).Error
 }
 
-func (user *User) DeleteUser() error {
-
-	_, err := Delete("userList")
-	if err != nil {
-		return err
-	}
-
-	for k, _ := range user.IDList {
-		_, err = Delete("userID" + strconv.Itoa(user.IDList[k]))
-		if err != nil {
-			return nil
-		}
-		if err := db.Model(&user).Delete(&user.IDList[k]).Error; err != nil {
-			return err
-		}
-	}
-	return nil
-}
+//func (user *User) DeleteUser() error {
+//
+//	_, err := Delete("userList")
+//	if err != nil {
+//		return err
+//	}
+//
+//	for k, _ := range user.IDList {
+//		_, err = Delete("userID" + strconv.Itoa(user.IDList[k]))
+//		if err != nil {
+//			return nil
+//		}
+//		if err := db.Model(&user).Delete(&user.IDList[k]).Error; err != nil {
+//			return err
+//		}
+//	}
+//	return nil
+//}
 
 func (user *User) UserList() (*[]User, error) {
 	var userList []User

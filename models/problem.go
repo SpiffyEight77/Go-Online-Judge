@@ -11,7 +11,7 @@ type Problem struct {
 	ID           int       `gorm:"column:id" json:"id"`
 	IDList       []int     `gorm:"column:id_list" json:"id_list"`
 	Title        string    `gorm:"column:title" json:"title"`
-	Author       string    `gorm:"column:author" json:"author"`
+	//Author       string    `gorm:"column:author" json:"author"`
 	Description  string    `gorm:"column:description" json:"description"`
 	Input        string    `gorm:"column:input" json:"input"`
 	Output       string    `gorm:"column:output" json:"output"`
@@ -26,22 +26,22 @@ type Problem struct {
 
 func (problem *Problem) ProblemsList() (*[]Problem, error) {
 	var problemList []Problem
-	key := "problemList"
-	if Exists(key) {
-		data, err := Get(key)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
-		}
-		json.Unmarshal(data, &problemList)
-		return &problemList, nil
-	}
+	//key := "problemList"
+	//if Exists(key) {
+	//	data, err := Get(key)
+	//	if err != nil {
+	//		logs.Error(err)
+	//		return nil, err
+	//	}
+	//	json.Unmarshal(data, &problemList)
+	//	return &problemList, nil
+	//}
 
 	err := db.Model(&problemList).Scan(&problemList).Error
 	if err != nil {
 		return nil, err
 	}
-	Set(key, problemList, 3600)
+	//Set(key, problemList, 3600)
 	return &problemList, nil
 }
 

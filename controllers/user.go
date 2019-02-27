@@ -92,16 +92,16 @@ func PostUserRegister(c *gin.Context) {
 	user := models.User{
 		Username:  req.Username,
 		Password:  req.Password,
-		Email:     req.Email,
+		//Email:     req.Email,
 		CreatedAt: time.Now(),
 		LastLogin: time.Now(),
 	}
 
-	ok, data := user.CheckAuth()
-	if ok || data != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
+	//ok, data := user.CheckAuth()
+	//if ok || data != nil {
+	//	Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+	//	return
+	//}
 
 	token, err := jwt.GenerateToken(req.Username, req.Password)
 	if err != nil {
@@ -115,7 +115,7 @@ func PostUserRegister(c *gin.Context) {
 		return
 	}
 
-	ok, data = user.CheckAuth()
+	ok, data := user.CheckAuth()
 	if !ok {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
@@ -175,6 +175,7 @@ func PostUserProfile(c *gin.Context) {
 		ID:       req.Uid,
 		Username: req.Username,
 		Password: req.Password,
+		Nickname: "",
 		Email:    req.Email,
 	}
 	if err := user.UpdateProfile(); err != nil {
@@ -193,23 +194,23 @@ type UserDeleteRequest struct {
 // @Produce json
 // @Param id_list query int true "id_list"
 // @Router /api/v1/user/delete [post]
-func PostDeleteUser(c *gin.Context) {
-	req := UserDeleteRequest{}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
-
-	user := models.User{
-		IDList: req.IDList,
-	}
-	if err := user.DeleteUser(); err != nil {
-		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
-		return
-	}
-
-	Response(c, http.StatusOK, errCode.SUCCESS, nil)
-}
+//func PostDeleteUser(c *gin.Context) {
+//	req := UserDeleteRequest{}
+//	if err := c.ShouldBindJSON(&req); err != nil {
+//		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+//		return
+//	}
+//
+//	user := models.User{
+//		IDList: req.IDList,
+//	}
+//	if err := user.DeleteUser(); err != nil {
+//		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+//		return
+//	}
+//
+//	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+//}
 
 // @Summary User List
 // @Produce json

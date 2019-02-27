@@ -68,7 +68,7 @@ func InitRouter() *gin.Engine {
 				user.GET("/list", controllers.GetUserList)
 				user.GET("/login", controllers.GetUserLogin)
 				user.POST("/login", controllers.PostUserLogin)
-				user.POST("/delete", controllers.PostDeleteUser)
+				//user.POST("/delete", controllers.PostDeleteUser)
 			}
 			problem := administration.Group("/problem")
 			{
