@@ -2,14 +2,13 @@ package models
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego/logs"
 	"strconv"
 	"time"
 )
 
 type User struct {
-	ID        int       `gorm:"column:id" json:"uid"`
+	ID int `gorm:"column:id" json:"uid"`
 	//IDList    []int     `gorm:"column:id_list" json:"id_list"`
 	Nickname  string    `gorm:"column:nickname" json:"nickname"`
 	Username  string    `gorm:"column:username" json:"username"`
@@ -21,10 +20,10 @@ type User struct {
 }
 
 func (user *User) CheckAuth() (bool, *User) {
-	db.Where("username = ?", user.Username).Find(&user)
-	if user.ID > 0 {
-		fmt.Println(user.ID)
-		return true, user
+	var dbuser User
+	db.Where("username = ?", user.Username).Find(&dbuser)
+	if dbuser.ID > 0 {
+		return true, &dbuser
 	}
 	return false, nil
 }

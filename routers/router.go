@@ -50,6 +50,10 @@ func InitRouter() *gin.Engine {
 			news.GET("/list", controllers.GetNewsList)
 			news.GET("/detail", controllers.GetNewsDetail)
 		}
+		submission := v1.Group("/submission")
+		{
+			submission.POST("/submit", controllers.PostSubmission)
+		}
 		contest := v1.Group("/contest")
 		{
 			contest.GET("/list", controllers.GetContestList)

@@ -156,11 +156,11 @@ func PostDeleteProblem(c *gin.Context) {
 //}
 
 type ProblemSubmitRequest struct {
-	PID      int    `form:"pid" json:"pid" biding:"required"`
-	UID      int    `form:"uid" json:"uid" biding:"required"`
-	Code     string `form:"code" json:"code" biding:"required"`
-	Memory   int    `form:"memory" json:"memory" biding:"required"`
-	Language int    `form:"language" json:"language" biding:"required"`
+	PID  int    `form:"pid" json:"pid" biding:"required"`
+	UID  int    `form:"uid" json:"uid" biding:"required"`
+	Code string `form:"code" json:"code" biding:"required"`
+	//Memory   int    `form:"memory" json:"memory" biding:"required"`
+	Language int `form:"language" json:"language" biding:"required"`
 }
 
 const (
@@ -187,12 +187,13 @@ func PostSubmitProblem(c *gin.Context) {
 	}
 
 	solution := models.Solution{
-		PID:      req.PID,
-		UID:      req.UID,
-		Code:     req.Code,
-		Memory:   req.Memory,
+		PID:  req.PID,
+		UID:  req.UID,
+		Code: req.Code,
+		//Memory:   req.Memory,
 		Language: req.Language,
 	}
+
 	if err := solution.SubmitProblem(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return

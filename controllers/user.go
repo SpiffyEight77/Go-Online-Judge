@@ -38,7 +38,8 @@ func PostUserLogin(c *gin.Context) {
 	valid := validation.Validation{}
 	ok, _ := valid.Valid(&req)
 
-	data := make(map[string]interface{})
+	//data := make(map[string]interface{})
+	resp := models.User{}
 	code := errCode.BADREQUEST
 	user := models.User{
 		Username: req.Username,
@@ -46,7 +47,7 @@ func PostUserLogin(c *gin.Context) {
 	}
 
 	if ok {
-		if isExist, data := user.CheckAuth(); isExist == true {
+		if isExist, data := user.CheckAuth(); isExist == true && data.Password == user.Password {
 			if token, err := jwt.GenerateToken(req.Username, req.Password); err != nil {
 				code = errCode.UNAUTHORIZED
 			} else {
@@ -56,16 +57,19 @@ func PostUserLogin(c *gin.Context) {
 				user.LastLogin = time.Now()
 				user.UpdateUserLogin()
 			}
+			resp.Username = data.Username
+			resp.ID = data.ID
 		} else {
 			code = errCode.UNAUTHORIZED
 		}
 	}
-	Response(c, code, code, data)
+	Response(c, code, code, resp)
 }
 
 type UserRegisterRequest struct {
 	Username string `form:"username" json:"username" biding:"required"`
-	Email    string `form:"email" json:"email" biding:"required"`
+	Nickname string `form:"nickname" json:"nickname" biding:"required"`
+	//Email    string `form:"email" json:"email" biding:"required"`
 	Password string `form:"password" json:"password" biding:"required"`
 }
 
@@ -90,18 +94,19 @@ func PostUserRegister(c *gin.Context) {
 	}
 
 	user := models.User{
-		Username:  req.Username,
-		Password:  req.Password,
+		Username: req.Username,
+		Password: req.Password,
+		Nickname: req.Nickname,
 		//Email:     req.Email,
 		CreatedAt: time.Now(),
 		LastLogin: time.Now(),
 	}
 
-	//ok, data := user.CheckAuth()
-	//if ok || data != nil {
-	//	Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-	//	return
-	//}
+	ok, data := user.CheckAuth()
+	if ok || data != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
 
 	token, err := jwt.GenerateToken(req.Username, req.Password)
 	if err != nil {
@@ -115,7 +120,7 @@ func PostUserRegister(c *gin.Context) {
 		return
 	}
 
-	ok, data := user.CheckAuth()
+	ok, data = user.CheckAuth()
 	if !ok {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return

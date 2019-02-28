@@ -8,9 +8,9 @@ import (
 )
 
 type Problem struct {
-	ID           int       `gorm:"column:id" json:"id"`
-	IDList       []int     `gorm:"column:id_list" json:"id_list"`
-	Title        string    `gorm:"column:title" json:"title"`
+	ID     int    `gorm:"column:id" json:"id"`
+	IDList []int  `gorm:"column:id_list" json:"id_list"`
+	Title  string `gorm:"column:title" json:"title"`
 	//Author       string    `gorm:"column:author" json:"author"`
 	Description  string    `gorm:"column:description" json:"description"`
 	Input        string    `gorm:"column:input" json:"input"`
