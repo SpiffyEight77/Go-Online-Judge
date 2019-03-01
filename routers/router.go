@@ -53,6 +53,7 @@ func InitRouter() *gin.Engine {
 		submission := v1.Group("/submission")
 		{
 			submission.POST("/submit", controllers.PostSubmission)
+			submission.GET("/list", controllers.GetSubmission)
 		}
 		contest := v1.Group("/contest")
 		{

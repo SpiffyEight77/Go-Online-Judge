@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/levigross/grequests"
 	"net/http"
@@ -14,11 +15,7 @@ type SubmissionRequest struct {
 	UID      string `form:"uid" json:"uid" binding:"required"`
 	Username string `form:"username" json:"username" binding:"required"`
 	Code     string `form:"code" json:"code" binding:"required"`
-	//Judge    string
-	//Time     time.Time
-	//Memory   int
 	Language string `form:"language" json:"language" binding:"required"`
-	//Created  time.Time
 }
 
 type Repdata struct {
@@ -26,17 +23,17 @@ type Repdata struct {
 }
 
 type JudgeResponse struct {
-	Stdout         string    `form:"stdout" json:"stdout" binding:"requird"`
-	Time           time.Time `form:"time" json:"time" binding:"required"`
-	Memory         string    `form:"memory" json:"memory" binding:"required"`
-	Stderr         string    `form:"stderr" json:"stderr" binding:"required"`
-	Token          string    `form:"token" json:"token" binding:"required"`
-	Compile_output string    `form:"compile_output" json:"compile_output" binding:"required"`
-	Message        string    `form:"message" json:"message" binding:"required"`
-	//"status": {
-	//"id": 3,
-	//"description": "Accepted"
-	//}
+	Stdout         string `form:"stdout" json:"stdout" binding:"required"`
+	Time           string `form:"time" json:"time" binding:"required"`
+	Memory         int    `form:"memory" json:"memory" binding:"required"`
+	Stderr         string `form:"stderr" json:"stderr" binding:"required"`
+	Token          string `form:"token" json:"token" binding:"required"`
+	Compile_output string `form:"compile_output" json:"compile_output" binding:"required"`
+	Message        string `form:"message" json:"message" binding:"required"`
+	Status         struct {
+		ID          int    `form:"id" json:"id" binding:"required"`
+		Description string `form:"description" json:"description" binding:"required"`
+	} `form:"status" json:"status" binding:"required"`
 }
 
 func PostSubmission(c *gin.Context) {
@@ -44,6 +41,16 @@ func PostSubmission(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
+	}
+
+	fmt.Println(req.UID)
+
+	programLanguage := map[string]string{
+		"4":  "C (gcc 7.2.0)",
+		"10": "C++ (g++ 7.2.0)",
+		"28": "Java (OpenJDK 7)",
+		"34": "Python (3.6.0)",
+		"36": "Python (2.7.9)",
 	}
 
 	ro := &grequests.RequestOptions{
@@ -55,13 +62,11 @@ func PostSubmission(c *gin.Context) {
 			"problem_id": req.PID,
 		},
 	}
-
-	//Response(c, http.StatusOK, errCode.SUCCESS, data)
-
 	res, err := grequests.Get("http://localhost:4040/api/v1/problem/detail", ro)
-
 	data := Repdata{}
 	res.JSON(&data)
+
+	submitTime := time.Now()
 
 	ro = &grequests.RequestOptions{
 		Headers: map[string]string{
@@ -69,23 +74,48 @@ func PostSubmission(c *gin.Context) {
 			"X-Auth-Token": "f6583e60-b13b-4228-b554-2eb332ca64e7",
 		},
 		JSON: map[string]string{
-			"source_code": req.Code,
-			"language_id": req.Language,
-			//"stdin": data.Data.SampleInput,
-			//"expected_output": data.Data.SampleOutput,
-			"stdin":           "Judge0",
-			"expected_output": "hello, Judge0",
+			"source_code":     req.Code,
+			"language_id":     req.Language,
+			"stdin":           data.Data.SampleInput,
+			"expected_output": data.Data.SampleOutput,
 		},
 	}
+	judgeRes, err := grequests.Post("http://localhost:3000/submissions?wait=true", ro)
+	if err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+	judgeData := JudgeResponse{}
+	judgeRes.JSON(&judgeData)
 
-	res, err = grequests.Post("http://localhost:3000/submissions?wait=true", ro)
+	submission := models.Submission{
+		PID:       req.PID,
+		UID:       req.UID,
+		Code:      req.Code,
+		Language:  programLanguage[req.Language],
+		Username:  req.Username,
+		Judge:     judgeData.Status.Description,
+		Time:      judgeData.Time,
+		Token:     judgeData.Token,
+		Memory:    judgeData.Memory,
+		CreatedAt: submitTime,
+	}
+
+	err = submission.CreateSubmission()
 	if err != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
 	}
 
-	Judgedata := JudgeResponse{}
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
 
-	//Response(c, http.StatusOK, errCode.SUCCESS, data)
-
+func GetSubmission(c *gin.Context) {
+	submission := models.Submission{}
+	data, err := submission.Submissions()
+	if err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, data)
 }
