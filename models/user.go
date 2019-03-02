@@ -46,22 +46,22 @@ func (user *User) UpdateUserLogin() error {
 }
 
 func (user *User) UserProfile() (*User, error) {
-	key := "userID" + strconv.Itoa(user.ID)
-	if Exists(key) {
-		data, err := Get(key)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
-		}
-		json.Unmarshal(data, &user)
-		return user, nil
-	}
+	//key := "userID" + strconv.Itoa(user.ID)
+	//if Exists(key) {
+	//	data, err := Get(key)
+	//	if err != nil {
+	//		logs.Error(err)
+	//		return nil, err
+	//	}
+	//	json.Unmarshal(data, &user)
+	//	return user, nil
+	//}
 
 	err := db.Model(&User{}).Where(&user).Scan(&user).Error
 	if err != nil {
 		return nil, err
 	}
-	Set(key, user, 3600)
+	//Set(key, user, 3600)
 	return user, nil
 }
 

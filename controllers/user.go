@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -141,7 +142,7 @@ type UserProfileRequest struct {
 // @Success 200 {string} json "{"data":{"token":(string),"username":(string)},"msg":"success"}"
 // @Router /api/v1/user/profile/detail [get]
 func GetUserProfile(c *gin.Context) {
-	id := c.GetHeader("uid")
+	id := c.Query("uid")
 	if id == "" {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
@@ -152,6 +153,8 @@ func GetUserProfile(c *gin.Context) {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
+
+	fmt.Println(uid)
 
 	user := models.User{
 		ID: uid,
