@@ -32,8 +32,6 @@ func InitRouter() *gin.Engine {
 			user.GET("/register", controllers.GetUserRegister)
 			user.POST("/register", controllers.PostUserRegister)
 
-
-
 			//profile := user.Group("/profile").Use(middlewares.JWT())
 			profile := user.Group("/profile")
 			{
@@ -43,7 +41,7 @@ func InitRouter() *gin.Engine {
 		}
 		problem := v1.Group("/problem")
 		{
-			problem.GET("/list", controllers.GetProblems)
+			problem.GET("/list", controllers.GetProblemList)
 			problem.GET("/detail", controllers.GetProblemDetail)
 			problem.POST("/submit", controllers.PostSubmitProblem)
 		}
@@ -56,6 +54,7 @@ func InitRouter() *gin.Engine {
 		{
 			submission.POST("/submit", controllers.PostSubmission)
 			submission.GET("/list", controllers.GetSubmission)
+			submission.GET("/solved", controllers.GetSolvedProblems)
 		}
 		contest := v1.Group("/contest")
 		{
@@ -79,7 +78,7 @@ func InitRouter() *gin.Engine {
 			}
 			problem := administration.Group("/problem")
 			{
-				problem.GET("/list", controllers.GetProblems)
+				problem.GET("/list", controllers.GetProblemList)
 				problem.GET("/detail", controllers.GetProblemDetail)
 				problem.POST("/delete", controllers.PostDeleteProblem)
 				//problem.POST("/new", controllers.PostCreateProblem)
@@ -97,8 +96,8 @@ func InitRouter() *gin.Engine {
 			{
 				contest.GET("/list", controllers.GetContestList)
 				contest.GET("/detail", controllers.GetContestDetail)
-				contest.POST("/create", controllers.PostCreateContest)
-				contest.POST("/edit", controllers.PostUpdateContest)
+				//contest.POST("/create", controllers.PostCreateContest)
+				//contest.POST("/edit", controllers.PostUpdateContest)
 				contest.POST("/delete", controllers.PostDeleteContest)
 			}
 			solution := administration.Group("/solution")

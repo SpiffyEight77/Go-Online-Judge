@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"github.com/astaxie/beego/logs"
+	"github.com/jinzhu/gorm"
 	"strconv"
 	"time"
 )
@@ -22,6 +23,8 @@ type Problem struct {
 	Tags         string    `gorm:"column:tags" json:"tags"`
 	CreatedAt    time.Time `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt    time.Time `gorm:"column:updated_at" json:"updated_at"`
+	Solve        int       `gorm:"column:solve" json:"solve"`
+	Submission   int       `gorm:"column:submission" json:"submission"`
 }
 
 func (problem *Problem) ProblemsList() (*[]Problem, error) {
@@ -99,5 +102,19 @@ func (problem *Problem) DeleteProblem() error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (problem *Problem) UpdateProblemSubmission(solve,submission int) error {
+	err := db.Model(&problem).UpdateColumn("submission",gorm.Expr("submission + ?", submission)).Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Model(&problem).UpdateColumn("solve",gorm.Expr("solve + ?", solve)).Error
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

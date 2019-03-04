@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/json"
 	"github.com/astaxie/beego/logs"
+	"github.com/jinzhu/gorm"
 	"strconv"
 	"time"
 )
@@ -10,13 +11,15 @@ import (
 type User struct {
 	ID int `gorm:"column:id" json:"uid"`
 	//IDList    []int     `gorm:"column:id_list" json:"id_list"`
-	Nickname  string    `gorm:"column:nickname" json:"nickname"`
-	Username  string    `gorm:"column:username" json:"username"`
-	Email     string    `gorm:"column:email" json:"email"`
-	Password  string    `gorm:"column:password" json:"password"`
-	Token     string    `gorm:"column:token" json:"token"`
-	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
-	LastLogin time.Time `gorm:"column:last_login" json:"last_login"`
+	Nickname   string    `gorm:"column:nickname" json:"nickname"`
+	Username   string    `gorm:"column:username" json:"username"`
+	Email      string    `gorm:"column:email" json:"email"`
+	Password   string    `gorm:"column:password" json:"password"`
+	Submission int       `gorm:"column:submission" json:"submission"`
+	Solve      int       `gorm:"column:solve" json:"solve"`
+	Token      string    `gorm:"column:token" json:"token"`
+	CreatedAt  time.Time `gorm:"column:created_at" json:"created_at"`
+	LastLogin  time.Time `gorm:"column:last_login" json:"last_login"`
 }
 
 func (user *User) CheckAuth() (bool, *User) {
@@ -117,4 +120,18 @@ func (user *User) UserList() (*[]User, error) {
 	}
 	Set(key, userList, 3600)
 	return &userList, nil
+}
+
+func (user *User) UpdateUserSubmission(solve, submission int) error {
+	err := db.Model(&user).UpdateColumn("submission", gorm.Expr("submission + ?", submission)).Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Model(&user).UpdateColumn("solve", gorm.Expr("solve + ?", solve)).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

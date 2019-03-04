@@ -22,7 +22,7 @@ type ProblemRequest struct {
 // @Summary Problems List
 // @Produce json
 // @Router /api/v1/problem/list [get]
-func GetProblems(c *gin.Context) {
+func GetProblemList(c *gin.Context) {
 	var problemList models.Problem
 	data, err := problemList.ProblemsList()
 	if err != nil {

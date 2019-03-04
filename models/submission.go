@@ -28,3 +28,11 @@ func (submission *Submission) Submissions() (*[]Submission, error) {
 	}
 	return &submissions, nil
 }
+
+func (submission *Submission) SolvedSubmission() (*Submission, error) {
+	err := db.Model(&Submission{}).Where("judge = ? AND pid = ? AND uid = ?", "Accepted", submission.PID, submission.UID).First(&submission).Error
+	if err != nil {
+		return nil, err
+	}
+	return submission, nil
+}

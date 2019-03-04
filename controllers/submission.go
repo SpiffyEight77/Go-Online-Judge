@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"online-judge/common/errCode"
 	"online-judge/models"
+	"strconv"
 	"time"
 )
 
@@ -107,6 +108,28 @@ func PostSubmission(c *gin.Context) {
 		return
 	}
 
+	pid,err := strconv.Atoi(req.PID)
+	problem := models.Problem{
+		ID: pid,
+	}
+
+	if submission.Judge == "Accepted" {
+		problem.UpdateProblemSubmission(1,1)
+	} else {
+		problem.UpdateProblemSubmission(0,1)
+	}
+
+	uid,err := strconv.Atoi(req.UID)
+	user := models.User{
+		ID: uid,
+	}
+
+	if submission.Judge == "Accepted" {
+		user.UpdateUserSubmission(1,1)
+	} else {
+		user.UpdateUserSubmission(0,1)
+	}
+
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
 
@@ -118,4 +141,38 @@ func GetSubmission(c *gin.Context) {
 		return
 	}
 	Response(c, http.StatusOK, errCode.SUCCESS, data)
+}
+
+type SolvedProblem struct {
+	flag bool
+}
+
+func GetSolvedProblems(c *gin.Context) {
+	pid := c.Query("pid")
+	uid := c.Query("uid")
+	if pid == "" || uid == "" {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	submission := models.Submission{
+		PID: pid,
+		UID: pid,
+	}
+
+	data, _ := submission.SolvedSubmission()
+	solvedProblem := SolvedProblem{}
+
+	//if err != nil {
+	//	Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+	//	return
+	//}
+
+	if data != nil {
+		solvedProblem.flag = true
+	} else {
+		solvedProblem.flag = false
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, solvedProblem)
 }

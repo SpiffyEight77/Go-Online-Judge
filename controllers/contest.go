@@ -52,12 +52,12 @@ func GetContestDetail(c *gin.Context) {
 
 type ContestCreateRequest struct {
 	Title       string    `form:"title" json:"title" biding:"required"`
-	UID         int       `form:"uid" json:"uid"  biding:"required"`
-	StartAt     time.Time `form:"start_at" json:"start_at" biding:"required"`
-	EndAt       time.Time `form:"end_at" json:"end_at" biding:"required"`
-	Status      int       `form:"status" json:"status" biding:"required"`
-	ProblemNum  int       `form:"problem_num" json:"problem_num" biding:"required"`
-	Participant int       `form:"participant" json:"participant" biding:"required"`
+	//UID         int       `form:"uid" json:"uid"  biding:"required"`
+	StartTime     time.Time `form:"start_time" json:"start_time" biding:"required"`
+	EndTime       time.Time `form:"end_time" json:"end_time" biding:"required"`
+	Status      string       `form:"status" json:"status" biding:"required"`
+	//ProblemNum  int       `form:"problem_num" json:"problem_num" biding:"required"`
+	//Participant int       `form:"participant" json:"participant" biding:"required"`
 }
 
 // @Summary  Contest Create
@@ -70,26 +70,26 @@ type ContestCreateRequest struct {
 // @Param problem_num query int true "problem_num"
 // @Param participant query int true "participant"
 // @Router /api/v1/admin/contest/create [post]
-func PostCreateContest(c *gin.Context) {
-	req := ContestCreateRequest{}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
-
-	contest := models.Contest{
-		Title:       req.Title,
-		UID:         req.UID,
-		StartAt:     req.StartAt,
-		ProblemNum:  req.ProblemNum,
-		Participant: req.Participant,
-	}
-	if err := contest.ContestCreateAndUpdate(); err != nil {
-		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
-		return
-	}
-	Response(c, http.StatusOK, errCode.SUCCESS, nil)
-}
+//func PostCreateContest(c *gin.Context) {
+//	req := ContestCreateRequest{}
+//	if err := c.ShouldBindJSON(&req); err != nil {
+//		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+//		return
+//	}
+//
+//	contest := models.Contest{
+//		Title:       req.Title,
+//		UID:         req.UID,
+//		StartAt:     req.StartAt,
+//		ProblemNum:  req.ProblemNum,
+//		Participant: req.Participant,
+//	}
+//	if err := contest.ContestCreateAndUpdate(); err != nil {
+//		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+//		return
+//	}
+//	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+//}
 
 // @Summary  Contest Detail
 // @Produce json
@@ -128,23 +128,23 @@ func PostDeleteContest(c *gin.Context) {
 // @Param problem_num query int true "problem_num"
 // @Param participant query int true "participant"
 // @Router /api/v1/admin/contest/edit [post]
-func PostUpdateContest(c *gin.Context) {
-	req := ContestCreateRequest{}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
-
-	contest := models.Contest{
-		Title:       req.Title,
-		UID:         req.UID,
-		StartAt:     req.StartAt,
-		ProblemNum:  req.ProblemNum,
-		Participant: req.Participant,
-	}
-	if err := contest.ContestCreateAndUpdate(); err != nil {
-		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
-		return
-	}
-	Response(c, http.StatusOK, errCode.SUCCESS, nil)
-}
+//func PostUpdateContest(c *gin.Context) {
+//	req := ContestCreateRequest{}
+//	if err := c.ShouldBindJSON(&req); err != nil {
+//		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+//		return
+//	}
+//
+//	contest := models.Contest{
+//		Title:       req.Title,
+//		UID:         req.UID,
+//		StartAt:     req.StartAt,
+//		ProblemNum:  req.ProblemNum,
+//		Participant: req.Participant,
+//	}
+//	if err := contest.ContestCreateAndUpdate(); err != nil {
+//		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+//		return
+//	}
+//	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+//}
