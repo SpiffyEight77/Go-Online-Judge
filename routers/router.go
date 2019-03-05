@@ -96,7 +96,7 @@ func InitRouter() *gin.Engine {
 			{
 				contest.GET("/list", controllers.GetContestList)
 				contest.GET("/detail", controllers.GetContestDetail)
-				//contest.POST("/create", controllers.PostCreateContest)
+				contest.POST("/create", controllers.PostCreateContest)
 				//contest.POST("/edit", controllers.PostUpdateContest)
 				contest.POST("/delete", controllers.PostDeleteContest)
 			}

@@ -1,65 +1,42 @@
 package models
 
 import (
-	"encoding/json"
-	"github.com/astaxie/beego/logs"
 	"strconv"
 	"time"
 )
 
 type Contest struct {
-	ID    int    `gorm:"column:id" json:"id"`
-	Title string `gorm:"column:title" json:"title"`
-	//UID   int    `gorm:"column:uid" json:"uid"`
-	//CreatedAt   time.Time `gorm:"column:created_at" json:"created_at"`
+	ID        int       `gorm:"column:id" json:"id"`
+	Title     string    `gorm:"column:title" json:"title"`
+	PIDList   string    `gorm:"column:pidList" json:"pid_list"`
 	StartTime time.Time `gorm:"column:start_time" json:"start_time"`
 	EndTime   time.Time `gorm:"column:end_time" json:"end_time"`
-	Status    string       `gorm:"column:status" json:"status"`
 	Type      string    `gorm:"column:type" json:"type"`
-	//ProblemNum  int       `gorm:"column:problem_num" json:"problem_num"`
-	//Participant int       `gorm:"column:participant" json:"participant"`
 }
 
 func (contest *Contest) ContestList() (*[]Contest, error) {
 	var contestList []Contest
-
-	//key := "contestList"
-	//if Exists(key) {
-	//	data, err := Get(key)
-	//	if err != nil {
-	//		logs.Error(err)
-	//		return nil, err
-	//	}
-	//	json.Unmarshal(data, &contestList)
-	//	return &contestList, nil
-	//}
-
 	err := db.Model(&Contest{}).Scan(&contestList).Error
 	if err != nil {
 		return nil, err
 	}
-	//Set(key, contestList, 3600)
 	return &contestList, nil
 }
 
 func (contest *Contest) ContestDetail() (*Contest, error) {
-	key := "contestID" + strconv.Itoa(contest.ID)
-	if Exists(key) {
-		data, err := Get(key)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
-		}
-		json.Unmarshal(data, &contest)
-		return contest, nil
-	}
-
 	err := db.Model(&Contest{}).Where(&contest).Scan(&contest).Error
 	if err != nil {
 		return nil, err
 	}
-	Set(key, contest, 3600)
 	return contest, nil
+}
+
+func (contest *Contest) ContestCreate() error {
+	err := db.Model(&contest).Create(&contest).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (contest *Contest) ContestCreateAndUpdate() error {

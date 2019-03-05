@@ -108,26 +108,26 @@ func PostSubmission(c *gin.Context) {
 		return
 	}
 
-	pid,err := strconv.Atoi(req.PID)
+	pid, err := strconv.Atoi(req.PID)
 	problem := models.Problem{
 		ID: pid,
 	}
 
 	if submission.Judge == "Accepted" {
-		problem.UpdateProblemSubmission(1,1)
+		problem.UpdateProblemSubmission(1, 1)
 	} else {
-		problem.UpdateProblemSubmission(0,1)
+		problem.UpdateProblemSubmission(0, 1)
 	}
 
-	uid,err := strconv.Atoi(req.UID)
+	uid, err := strconv.Atoi(req.UID)
 	user := models.User{
 		ID: uid,
 	}
 
 	if submission.Judge == "Accepted" {
-		user.UpdateUserSubmission(1,1)
+		user.UpdateUserSubmission(1, 1)
 	} else {
-		user.UpdateUserSubmission(0,1)
+		user.UpdateUserSubmission(0, 1)
 	}
 
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)

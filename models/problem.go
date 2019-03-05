@@ -68,6 +68,15 @@ func (problem *Problem) ProblemDetail() (*Problem, error) {
 	return problem, nil
 }
 
+func GetProblemDetail(pid int) (*Problem, error) {
+	var problem Problem
+	err := db.Model(&Problem{}).Where(&problem).Scan(&problem).Error
+	if err != nil {
+		return nil, err
+	}
+	return &problem, nil
+}
+
 func (problem *Problem) CreateAndUpdateProblem() error {
 	_, err := Delete("problemList")
 	if err != nil {
@@ -105,13 +114,13 @@ func (problem *Problem) DeleteProblem() error {
 	return nil
 }
 
-func (problem *Problem) UpdateProblemSubmission(solve,submission int) error {
-	err := db.Model(&problem).UpdateColumn("submission",gorm.Expr("submission + ?", submission)).Error
+func (problem *Problem) UpdateProblemSubmission(solve, submission int) error {
+	err := db.Model(&problem).UpdateColumn("submission", gorm.Expr("submission + ?", submission)).Error
 	if err != nil {
 		return err
 	}
 
-	err = db.Model(&problem).UpdateColumn("solve",gorm.Expr("solve + ?", solve)).Error
+	err = db.Model(&problem).UpdateColumn("solve", gorm.Expr("solve + ?", solve)).Error
 	if err != nil {
 		return err
 	}
