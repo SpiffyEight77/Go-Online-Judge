@@ -9,6 +9,7 @@ type Contest struct {
 	ID        int       `gorm:"column:id" json:"id"`
 	Title     string    `gorm:"column:title" json:"title"`
 	PIDList   string    `gorm:"column:pidList" json:"pid_list"`
+	Problems  string    `gorm:"column:problems" json:"problems"`
 	StartTime time.Time `gorm:"column:start_time" json:"start_time"`
 	EndTime   time.Time `gorm:"column:end_time" json:"end_time"`
 	Type      string    `gorm:"column:type" json:"type"`

@@ -11,7 +11,7 @@ import (
 type ProblemRequest struct {
 	Title        string `form:"title" json:"title" biding:"required"`
 	Author       string `form:"author" json:"author" biding:"-"`
-	Description  string `form:"descriptipon" json:"description" biding:"required"`
+	Description  string `form:"description" json:"description" biding:"required"`
 	Input        string `form:"input" json:"input" biding:"required"`
 	Output       string `form:"output" json:"output" biding:"required"`
 	SampleInput  string `form:"sample_input" json:"sample_input" biding:"required"`

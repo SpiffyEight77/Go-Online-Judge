@@ -9,10 +9,9 @@ import (
 )
 
 type Problem struct {
-	ID     int    `gorm:"column:id" json:"id"`
-	IDList []int  `gorm:"column:id_list" json:"id_list"`
-	Title  string `gorm:"column:title" json:"title"`
-	//Author       string    `gorm:"column:author" json:"author"`
+	ID           int       `gorm:"column:id" json:"id"`
+	IDList       []int     `gorm:"column:id_list" json:"id_list"`
+	Title        string    `gorm:"column:title" json:"title"`
 	Description  string    `gorm:"column:description" json:"description"`
 	Input        string    `gorm:"column:input" json:"input"`
 	Output       string    `gorm:"column:output" json:"output"`
@@ -121,6 +120,39 @@ func (problem *Problem) UpdateProblemSubmission(solve, submission int) error {
 	}
 
 	err = db.Model(&problem).UpdateColumn("solve", gorm.Expr("solve + ?", solve)).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type ContestProblem struct {
+	ID           int       `gorm:"column:id" json:"id"`
+	CID          string    `gorm:"column:cid" json:"cid"`
+	Title        string    `gorm:"column:title" json:"title"`
+	Description  string    `gorm:"column:description" json:"description"`
+	Input        string    `gorm:"column:input" json:"input"`
+	Output       string    `gorm:"column:output" json:"output"`
+	SampleInput  string    `gorm:"column:sample_input" json:"sample_input"`
+	SampleOutput string    `gorm:"column:sample_output" json:"sample_output"`
+	Solve        int       `gorm:"column:solve" json:"solve"`
+	Submission   int       `gorm:"column:submission" json:"submission"`
+}
+
+func (contestProblem *ContestProblem) UpdateContestProblemSubmission(solve, submission int) error {
+	err := db.Model(&contestProblem).
+			UpdateColumn("submission", gorm.Expr("submission + ?", submission)).
+			Where("cid = ? and pid = ?",contestProblem.CID,contestProblem.ID).
+			Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Model(&contestProblem).
+			UpdateColumn("solve", gorm.Expr("solve + ?", solve)).
+			Where("cid = ? and pid = ?",contestProblem.CID,contestProblem.ID).
+			Error
 	if err != nil {
 		return err
 	}

@@ -36,3 +36,22 @@ func (submission *Submission) SolvedSubmission() (*Submission, error) {
 	}
 	return submission, nil
 }
+
+type ContestSubmission struct {
+	ID        int       `gorm:"column:id" json:"id"`
+	UID       string    `gorm:"column:uid" json:"uid"`
+	CID       string    `gorm:"column:cid" json:"cid"`
+	Username  string    `gorm:"column:username" json:"username"`
+	PID       string    `gorm:"column:pid" json:"pid"`
+	Judge     string    `gorm:"column:judge" json:"judge"`
+	Code      string    `gorm:"column:code" json:"code"`
+	Time      string    `gorm:"column:time" json:"time"`
+	Memory    int       `gorm:"column:memory" json:"memory"`
+	Language  string    `gorm:"column:language" json:"language"`
+	Token     string    `gorm:"column:token" json:"token"`
+	CreatedAt time.Time `gorm:"column:created_at" json:"created_at"`
+}
+
+func (contestSubmission *ContestSubmission) CreateContestSubmission() error {
+	return db.Model(&ContestSubmission{}).Create(&contestSubmission).Error
+}
