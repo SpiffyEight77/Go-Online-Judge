@@ -200,3 +200,33 @@ func PostSubmitProblem(c *gin.Context) {
 	}
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
+
+type ContestProblemSubmitRequest struct {
+	PID  int    `form:"pid" json:"pid" biding:"required"`
+	UID  int    `form:"uid" json:"uid" biding:"required"`
+	Code string `form:"code" json:"code" biding:"required"`
+	//Memory   int    `form:"memory" json:"memory" biding:"required"`
+	Language int `form:"language" json:"language" biding:"required"`
+}
+
+func PostSubmitContestProblem(c *gin.Context) {
+	req := ProblemSubmitRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	solution := models.Solution{
+		PID:  req.PID,
+		UID:  req.UID,
+		Code: req.Code,
+		//Memory:   req.Memory,
+		Language: req.Language,
+	}
+
+	if err := solution.SubmitProblem(); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}

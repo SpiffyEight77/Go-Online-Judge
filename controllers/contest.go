@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/levigross/grequests"
 	"net/http"
@@ -25,8 +26,8 @@ func GetContestList(c *gin.Context) {
 }
 
 type ProblemDataResponse struct {
-	Contest models.Contest   `json:"contest"`
-	Problem []models.Problem `json:"problem"`
+	Contest models.Contest          `json:"contest"`
+	Problem []models.ContestProblem `json:"problem"`
 }
 
 // @Summary  Contest Detail
@@ -61,10 +62,10 @@ func GetContestDetail(c *gin.Context) {
 	var pidList []int
 	json.Unmarshal([]byte(data.PIDList), &pidList)
 
-	var list []models.Problem
+	var list []models.ContestProblem
 
 	for i := 0; i < len(pidList); i++ {
-		data, _ := models.GetProblemDetail(pidList[i])
+		data, _ := models.GetContestProblemDetail(pidList[i], contestID, i+1)
 		list = append(list, *data)
 	}
 
@@ -105,9 +106,7 @@ func PostCreateContest(c *gin.Context) {
 		PIDList:   req.PIDList,
 		StartTime: time.Now(),
 		EndTime:   time.Now(),
-		//StartTime: req.StartTime,
-		//EndTime:   req.EndTime,
-		Type: req.Type,
+		Type:      req.Type,
 	}
 	if err := contest.ContestCreate(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
@@ -146,6 +145,7 @@ func PostDeleteContest(c *gin.Context) {
 type ContestSubmissionRequest struct {
 	PID      string `form:"pid" json:"pid" binding:"required"`
 	UID      string `form:"uid" json:"uid" binding:"required"`
+	Index    string `form:"index" json:"index" binding:"required"`
 	CID      string `form:"cid" json:"cid" binding:"required"`
 	Username string `form:"username" json:"username" binding:"required"`
 	Code     string `form:"code" json:"code" binding:"required"`
@@ -177,7 +177,7 @@ func PostContestProblemSubmit(c *gin.Context) {
 		return
 	}
 
-	//fmt.Println(req.UID)
+	fmt.Println(req)
 
 	programLanguage := map[string]string{
 		"4":  "C (gcc 7.2.0)",
@@ -193,10 +193,12 @@ func PostContestProblemSubmit(c *gin.Context) {
 			"X-Auth-Token": "f6583e60-b13b-4228-b554-2eb332ca64e7",
 		},
 		Params: map[string]string{
-			"problem_id": req.PID,
+			//"problem_id": req.PID,
+			"problem_index": req.Index,
+			"contest_id": req.CID,
 		},
 	}
-	res, err := grequests.Get("http://localhost:4040/api/v1/problem/detail", ro)
+	res, err := grequests.Get("http://localhost:4040/api/v1/contest/problem/detail", ro)
 	data := RepContestData{}
 	res.JSON(&data)
 
@@ -226,6 +228,7 @@ func PostContestProblemSubmit(c *gin.Context) {
 		PID:       req.PID,
 		UID:       req.UID,
 		CID:       req.CID,
+		Index:     req.Index,
 		Code:      req.Code,
 		Language:  programLanguage[req.Language],
 		Username:  req.Username,
@@ -268,12 +271,41 @@ func PostContestProblemSubmit(c *gin.Context) {
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
 
-func GetContestProblem(c *gin.Context) {
+func GetContestProblemDetail(c *gin.Context) {
+	index := c.Query("problem_index")
+	cid := c.Query("contest_id")
 
+	if index == "" {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	if cid == "" {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	Index, _ := strconv.Atoi(index)
+	CID, _ := strconv.Atoi(cid)
+
+	contestProblem := models.ContestProblem{}
+
+	data, err := contestProblem.GetContestProblemDetails(Index, CID)
+	if err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, data)
 }
 
 func GetContestSubmission(c *gin.Context) {
-
+	contestSubmission := models.ContestSubmission{}
+	data, err := contestSubmission.ContestSubmissions()
+	if err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+	Response(c, http.StatusOK, errCode.SUCCESS, data)
 }
 
 // @Summary  Contest Edit

@@ -60,7 +60,13 @@ func InitRouter() *gin.Engine {
 		{
 			contest.GET("/list", controllers.GetContestList)
 			contest.GET("/detail", controllers.GetContestDetail)
-			contest.POST("/submit", controllers.PostContestProblemSubmit)
+			contest.GET("/submission",controllers.GetContestSubmission)
+			//contest.POST("/submit", controllers.PostContestProblemSubmit)
+			problem := contest.Group("/problem")
+			{
+				problem.GET("/detail", controllers.GetContestProblemDetail)
+				problem.POST("/submit",controllers.PostContestProblemSubmit)
+			}
 		}
 		solution := v1.Group("/solution")
 		{

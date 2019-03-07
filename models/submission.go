@@ -41,6 +41,7 @@ type ContestSubmission struct {
 	ID        int       `gorm:"column:id" json:"id"`
 	UID       string    `gorm:"column:uid" json:"uid"`
 	CID       string    `gorm:"column:cid" json:"cid"`
+	Index     string    `gorm:"column:index" json:"index"`
 	Username  string    `gorm:"column:username" json:"username"`
 	PID       string    `gorm:"column:pid" json:"pid"`
 	Judge     string    `gorm:"column:judge" json:"judge"`
@@ -55,3 +56,13 @@ type ContestSubmission struct {
 func (contestSubmission *ContestSubmission) CreateContestSubmission() error {
 	return db.Model(&ContestSubmission{}).Create(&contestSubmission).Error
 }
+
+func (contestSubmission *ContestSubmission) ContestSubmissions() (*[]ContestSubmission, error) {
+	var contestSubmissions []ContestSubmission
+	err := db.Model(&ContestSubmission{}).Scan(&contestSubmissions).Error
+	if err != nil {
+		return nil, err
+	}
+	return &contestSubmissions, nil
+}
+

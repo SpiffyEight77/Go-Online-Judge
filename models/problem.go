@@ -128,34 +128,70 @@ func (problem *Problem) UpdateProblemSubmission(solve, submission int) error {
 }
 
 type ContestProblem struct {
-	ID           int       `gorm:"column:id" json:"id"`
-	CID          string    `gorm:"column:cid" json:"cid"`
-	Title        string    `gorm:"column:title" json:"title"`
-	Description  string    `gorm:"column:description" json:"description"`
-	Input        string    `gorm:"column:input" json:"input"`
-	Output       string    `gorm:"column:output" json:"output"`
-	SampleInput  string    `gorm:"column:sample_input" json:"sample_input"`
-	SampleOutput string    `gorm:"column:sample_output" json:"sample_output"`
-	Solve        int       `gorm:"column:solve" json:"solve"`
-	Submission   int       `gorm:"column:submission" json:"submission"`
+	ID           int    `gorm:"column:id" json:"id"`
+	CID          string `gorm:"column:cid" json:"cid"`
+	PID          string `gorm:"column:pid" json:"pid"`
+	Index        string `gorm:"column:index" json:"index"`
+	Title        string `gorm:"column:title" json:"title"`
+	Description  string `gorm:"column:description" json:"description"`
+	Input        string `gorm:"column:input" json:"input"`
+	Output       string `gorm:"column:output" json:"output"`
+	SampleInput  string `gorm:"column:sample_input" json:"sample_input"`
+	SampleOutput string `gorm:"column:sample_output" json:"sample_output"`
+	Solve        int    `gorm:"column:solve" json:"solve"`
+	Submission   int    `gorm:"column:submission" json:"submission"`
 }
 
 func (contestProblem *ContestProblem) UpdateContestProblemSubmission(solve, submission int) error {
 	err := db.Model(&contestProblem).
-			UpdateColumn("submission", gorm.Expr("submission + ?", submission)).
-			Where("cid = ? and pid = ?",contestProblem.CID,contestProblem.ID).
-			Error
+		UpdateColumn("submission", gorm.Expr("submission + ?", submission)).
+		Where("cid = ? and pid = ?", contestProblem.CID, contestProblem.ID).
+		Error
 	if err != nil {
 		return err
 	}
 
 	err = db.Model(&contestProblem).
-			UpdateColumn("solve", gorm.Expr("solve + ?", solve)).
-			Where("cid = ? and pid = ?",contestProblem.CID,contestProblem.ID).
-			Error
+		UpdateColumn("solve", gorm.Expr("solve + ?", solve)).
+		Where("cid = ? and pid = ?", contestProblem.CID, contestProblem.ID).
+		Error
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (contestProblem *ContestProblem) GetContestProblemDetails(index, cid int) (*ContestProblem, error) {
+	//var contestProblem ContestProblem
+
+	Index := strconv.Itoa(index)
+	CID := strconv.Itoa(cid)
+	//Index := strconv.Itoa(index)
+
+	err := db.Model(&ContestProblem{}).
+		Where(&ContestProblem{Index: Index, CID: CID}).
+		Scan(&contestProblem).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return contestProblem, nil
+}
+
+func GetContestProblemDetail(pid, cid, index int) (*ContestProblem, error) {
+	var contestProblem ContestProblem
+
+	PID := strconv.Itoa(pid)
+	CID := strconv.Itoa(cid)
+	Index := strconv.Itoa(index)
+
+	err := db.Model(&ContestProblem{}).
+		Where(&ContestProblem{PID: PID, CID: CID, Index: Index}).
+		Scan(&contestProblem).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return &contestProblem, nil
 }
