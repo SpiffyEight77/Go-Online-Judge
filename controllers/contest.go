@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/levigross/grequests"
+	"github.com/spf13/viper"
 	"net/http"
 	"online-judge/common/errCode"
 	"online-judge/models"
@@ -195,10 +196,13 @@ func PostContestProblemSubmit(c *gin.Context) {
 		Params: map[string]string{
 			//"problem_id": req.PID,
 			"problem_index": req.Index,
-			"contest_id": req.CID,
+			"contest_id":    req.CID,
 		},
 	}
-	res, err := grequests.Get("http://localhost:4040/api/v1/contest/problem/detail", ro)
+
+	hostURL := viper.GetString("host.url")
+
+	res, err := grequests.Get(hostURL+"/api/v1/contest/problem/detail", ro)
 	data := RepContestData{}
 	res.JSON(&data)
 
@@ -216,7 +220,9 @@ func PostContestProblemSubmit(c *gin.Context) {
 			"expected_output": data.Data.SampleOutput,
 		},
 	}
-	judgeRes, err := grequests.Post("http://localhost:3000/submissions?wait=true", ro)
+
+	judgeURL := viper.GetString("judge.url")
+	judgeRes, err := grequests.Post(judgeURL+"/submissions?wait=true", ro)
 	if err != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return

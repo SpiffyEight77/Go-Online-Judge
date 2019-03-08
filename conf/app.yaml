@@ -3,9 +3,18 @@ app:
 
 redis:
   addr: "127.0.0.1:6379"
-#  addr: "redis:6379"
+onlinejudge#  addr: "redis:6379"
 
 database:
   type: "mysql"
-  url: "root@tcp(127.0.0.1:3306)/onlinejudge?charset=utf8&parseTime=True&loc=Local"
+#  url: "root@tcp(127.0.0.1:3306)/onlinejudge?charset=utf8&parseTime=True&loc=Local"
+  url: "root:root@tcp(127.0.0.1:3306)/onlinejudge?charset=utf8&parseTime=True&loc=Local"
 #  url: "root:rootroot@tcp(mysql:3306)/onlinejudge?charset=utf8&parseTime=True&loc=Local"
+
+judge:
+#  url: "localhost:3000/"
+  url: "http://117.50.84.209:3000"
+
+host:
+#  url: "http://localhost:4040"
+  url: "http://117.50.84.209:4040"
