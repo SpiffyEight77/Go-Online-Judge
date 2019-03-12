@@ -5,25 +5,24 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/jinzhu/gorm"
 	"strconv"
-	"time"
 )
 
 type Problem struct {
-	ID           int       `gorm:"column:id" json:"id"`
-	IDList       []int     `gorm:"column:id_list" json:"id_list"`
-	Title        string    `gorm:"column:title" json:"title"`
-	Description  string    `gorm:"column:description" json:"description"`
-	Input        string    `gorm:"column:input" json:"input"`
-	Output       string    `gorm:"column:output" json:"output"`
-	SampleInput  string    `gorm:"column:sample_input" json:"sample_input"`
-	SampleOutput string    `gorm:"column:sample_output" json:"sample_output"`
-	Hint         string    `gorm:"column:hint" json:"hint"`
-	Source       string    `gorm:"column:source" json:"source"`
-	Tags         string    `gorm:"column:tags" json:"tags"`
-	CreatedAt    time.Time `gorm:"column:created_at" json:"created_at"`
-	UpdatedAt    time.Time `gorm:"column:updated_at" json:"updated_at"`
-	Solve        int       `gorm:"column:solve" json:"solve"`
-	Submission   int       `gorm:"column:submission" json:"submission"`
+	ID int `gorm:"column:id" json:"id"`
+	//IDList       []int     `gorm:"column:id_list" json:"id_list"`
+	Title        string `gorm:"column:title" json:"title"`
+	Description  string `gorm:"column:description" json:"description"`
+	Input        string `gorm:"column:input" json:"input"`
+	Output       string `gorm:"column:output" json:"output"`
+	SampleInput  string `gorm:"column:sample_input" json:"sample_input"`
+	SampleOutput string `gorm:"column:sample_output" json:"sample_output"`
+	//Hint         string    `gorm:"column:hint" json:"hint"`
+	//Source       string    `gorm:"column:source" json:"source"`
+	//Tags         string    `gorm:"column:tags" json:"tags"`
+	//CreatedAt    time.Time `gorm:"column:created_at" json:"created_at"`
+	//UpdatedAt    time.Time `gorm:"column:updated_at" json:"updated_at"`
+	Solve      int `gorm:"column:solve" json:"solve"`
+	Submission int `gorm:"column:submission" json:"submission"`
 }
 
 func (problem *Problem) ProblemsList() (*[]Problem, error) {
@@ -94,24 +93,24 @@ func (problem *Problem) CreateAndUpdateProblem() error {
 	return db.Model(&Problem{}).Update(&problem).Error
 }
 
-func (problem *Problem) DeleteProblem() error {
-	_, err := Delete("problemList")
-	if err != nil {
-		return err
-	}
-
-	for k, _ := range problem.IDList {
-		key := "problemID" + strconv.Itoa(problem.IDList[k])
-		_, err = Delete(key)
-		if err != nil {
-			return err
-		}
-		if err := db.Model(&problem).Delete(&problem.IDList[k]).Error; err != nil {
-			return err
-		}
-	}
-	return nil
-}
+//func (problem *Problem) DeleteProblem() error {
+//	_, err := Delete("problemList")
+//	if err != nil {
+//		return err
+//	}
+//
+//	for k, _ := range problem.IDList {
+//		key := "problemID" + strconv.Itoa(problem.IDList[k])
+//		_, err = Delete(key)
+//		if err != nil {
+//			return err
+//		}
+//		if err := db.Model(&problem).Delete(&problem.IDList[k]).Error; err != nil {
+//			return err
+//		}
+//	}
+//	return nil
+//}
 
 func (problem *Problem) UpdateProblemSubmission(solve, submission int) error {
 	err := db.Model(&problem).UpdateColumn("submission", gorm.Expr("submission + ?", submission)).Error
@@ -194,4 +193,28 @@ func GetContestProblemDetail(pid, cid, index int) (*ContestProblem, error) {
 		return nil, err
 	}
 	return &contestProblem, nil
+}
+
+func (problem *Problem) CreateProblem() error {
+	err := db.Model(&Problem{}).Create(problem).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (problem *Problem) UpdateProblem() error {
+	err := db.Model(&Problem{}).Update(problem).Where("id = ?", problem.ID).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (problem *Problem) DeleteProblem() error {
+	err := db.Model(&Problem{}).Delete(problem).Where("id = ?", problem.ID).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

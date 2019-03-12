@@ -314,6 +314,18 @@ func GetContestSubmission(c *gin.Context) {
 	Response(c, http.StatusOK, errCode.SUCCESS, data)
 }
 
+type UpdateContestRequest struct {
+	ID       int    `form:"id" json:"id"`
+	PIDList  string `form:"pid_list" json:"pid_list"`
+	Problems string `form:"problems" json:"problems"`
+	StartTime time.Time `form:"start_time" json:"start_time"`
+	EndTime time.Time `form:"end_time" json:"end_time"`
+}
+
+func PostUpdateContest(c *gin.Context) {
+
+}
+
 // @Summary  Contest Edit
 // @Produce json
 // @Param title query string true "title"

@@ -44,6 +44,9 @@ func InitRouter() *gin.Engine {
 			problem.GET("/list", controllers.GetProblemList)
 			problem.GET("/detail", controllers.GetProblemDetail)
 			problem.POST("/submit", controllers.PostSubmitProblem)
+			problem.POST("/create", controllers.PostCreateProblem)
+			problem.POST("/update", controllers.PostUpdateProblem)
+			problem.POST("/delete", controllers.PostDeleteProblem)
 		}
 		news := v1.Group("/news")
 		{
@@ -60,12 +63,13 @@ func InitRouter() *gin.Engine {
 		{
 			contest.GET("/list", controllers.GetContestList)
 			contest.GET("/detail", controllers.GetContestDetail)
-			contest.GET("/submission",controllers.GetContestSubmission)
+			contest.GET("/submission", controllers.GetContestSubmission)
+			contest.POST("/update",controllers)
 			//contest.POST("/submit", controllers.PostContestProblemSubmit)
 			problem := contest.Group("/problem")
 			{
 				problem.GET("/detail", controllers.GetContestProblemDetail)
-				problem.POST("/submit",controllers.PostContestProblemSubmit)
+				problem.POST("/submit", controllers.PostContestProblemSubmit)
 			}
 		}
 		solution := v1.Group("/solution")
@@ -87,7 +91,7 @@ func InitRouter() *gin.Engine {
 			{
 				problem.GET("/list", controllers.GetProblemList)
 				problem.GET("/detail", controllers.GetProblemDetail)
-				problem.POST("/delete", controllers.PostDeleteProblem)
+				//problem.POST("/delete", controllers.PostDeleteProblem)
 				//problem.POST("/new", controllers.PostCreateProblem)
 				//problem.POST("/edit", controllers.PostUpdateProblem)
 			}

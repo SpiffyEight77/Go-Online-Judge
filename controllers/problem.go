@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"online-judge/common/errCode"
@@ -103,22 +104,22 @@ type ProblemDeleteRequest struct {
 // @Produce json
 // @Param id_list query json true "id_list"
 // @Router /api/v1/problem/delete [post]
-func PostDeleteProblem(c *gin.Context) {
-	req := ProblemDeleteRequest{}
-	if err := c.ShouldBindJSON(&req); err != nil {
-		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
-		return
-	}
-
-	problem := models.Problem{
-		IDList: req.IDList,
-	}
-	if err := problem.DeleteProblem(); err != nil {
-		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
-		return
-	}
-	Response(c, http.StatusOK, errCode.SUCCESS, nil)
-}
+//func PostDeleteProblem(c *gin.Context) {
+//	req := ProblemDeleteRequest{}
+//	if err := c.ShouldBindJSON(&req); err != nil {
+//		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+//		return
+//	}
+//
+//	problem := models.Problem{
+//		IDList: req.IDList,
+//	}
+//	if err := problem.DeleteProblem(); err != nil {
+//		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+//		return
+//	}
+//	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+//}
 
 // @Summary Update Problem
 // @Produce json
@@ -228,5 +229,89 @@ func PostSubmitContestProblem(c *gin.Context) {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
+
+type ProblemCreateRequest struct {
+	ID           int    `form:"id" json:"id"`
+	Title        string `form:"title" json:"title"`
+	Description  string `form:"description" json:"description"`
+	Input        string `form:"input" json:"input"`
+	Output       string `form:"output" json:"output"`
+	SampleInput  string `form:"sample_input" json:"sample_input"`
+	SampleOutput string `form:"sample_output" json:"sample_output"`
+}
+
+func PostCreateProblem(c *gin.Context) {
+	req := ProblemCreateRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	problem := models.Problem{
+		Title:        req.Title,
+		Description:  req.Description,
+		Input:        req.Input,
+		Output:       req.Output,
+		SampleInput:  req.SampleInput,
+		SampleOutput: req.SampleOutput,
+	}
+
+	fmt.Println(problem)
+
+	if err := problem.CreateProblem(); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
+
+func PostUpdateProblem(c *gin.Context) {
+	req := ProblemCreateRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	problem := models.Problem{
+		ID:           req.ID,
+		Title:        req.Title,
+		Description:  req.Description,
+		Input:        req.Input,
+		Output:       req.Output,
+		SampleInput:  req.SampleInput,
+		SampleOutput: req.SampleOutput,
+	}
+
+	fmt.Println(problem)
+
+	if err := problem.UpdateProblem(); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
+
+func PostDeleteProblem(c *gin.Context) {
+	req := ProblemCreateRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	problem := models.Problem{
+		ID:           req.ID,
+	}
+
+	fmt.Println(problem)
+
+	if err := problem.DeleteProblem(); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
 }
