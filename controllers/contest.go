@@ -76,13 +76,12 @@ func GetContestDetail(c *gin.Context) {
 }
 
 type ContestCreateRequest struct {
-	Title string `form:"title" json:"title" biding:"required"`
-	//StartTime time.Time `form:"start_time" json:"start_time" biding:"required"`
-	//StartTime time.Time `form:"start_time" json:"start_time"`
-	//EndTime   time.Time `form:"end_time" json:"end_time" biding:"required"`
-	//EndTime   time.Time `form:"end_time" json:"end_time"`
-	PIDList string `form:"pidList" json:"pid_list" binding:"required"`
-	Type    string `form:"type" json:"type" binding:"required"`
+	Title     string    `form:"title" json:"title" biding:"required"`
+	StartTime time.Time `form:"start_time" json:"start_time"`
+	EndTime   time.Time `form:"end_time" json:"end_time"`
+	PIDList   string    `form:"pidList" json:"pid_list"`
+	Problems  string    `form:"problem" json:"problems"`
+	Type      string    `form:"type" json:"type"`
 }
 
 // @Summary  Contest Create
@@ -98,22 +97,69 @@ type ContestCreateRequest struct {
 func PostCreateContest(c *gin.Context) {
 	req := ContestCreateRequest{}
 	if err := c.ShouldBindJSON(&req); err != nil {
+		fmt.Println(req)
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
 	}
 
 	contest := models.Contest{
 		Title:     req.Title,
+		Problems:  req.Problems,
 		PIDList:   req.PIDList,
-		StartTime: time.Now(),
-		EndTime:   time.Now(),
-		Type:      req.Type,
+		StartTime: req.StartTime,
+		EndTime:   req.EndTime,
+		//Type:      req.Type,
 	}
-	if err := contest.ContestCreate(); err != nil {
+
+	err, data := contest.ContestCreate()
+	if err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
 		return
 	}
+
+	var pidList []int
+	json.Unmarshal([]byte(req.PIDList), &pidList)
+
+	//contestProblem := models.ContestProblem{}
+	//problem := models.Problem{}
+
+	cid := strconv.Itoa(data.ID)
+
+	for i := 0; i < len(pidList); i++ {
+		problem := models.Problem{
+			ID: pidList[i],
+		}
+
+		//problem.ID = pidList[i]
+		data, _ := problem.ProblemDetail()
+		pid := strconv.Itoa(pidList[i])
+		index := strconv.Itoa(i + 1)
+
+		contestProblem := models.ContestProblem{
+			CID:          cid,
+			PID:          pid,
+			Index:        index,
+			Title:        data.Title,
+			Description:  data.Description,
+			Input:        data.Input,
+			Output:       data.Output,
+			SampleInput:  data.SampleInput,
+			SampleOutput: data.SampleOutput,
+		}
+		_ = contestProblem.CreateContestProblem()
+	}
+
 	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
+
+type ContestDeleteRequest struct {
+	ID int `form:"id" json:"id"`
+	//Title     string    `form:"title" json:"title" biding:"required"`
+	//StartTime time.Time `form:"start_time" json:"start_time"`
+	//EndTime   time.Time `form:"end_time" json:"end_time"`
+	//PIDList   string    `form:"pidList" json:"pid_list"`
+	//Problems  string    `form:"problem" json:"problems"`
+	//Type      string    `form:"type" json:"type"`
 }
 
 // @Summary  Contest Detail
@@ -121,20 +167,20 @@ func PostCreateContest(c *gin.Context) {
 // @Param contest_id query int true "contest_id"
 // @Router /api/v1/admin/contest/delete [post]
 func PostDeleteContest(c *gin.Context) {
-	cid := c.Query("contest_id")
-	if cid == "" {
+	req := ContestDeleteRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
 	}
 
-	contestID, err := strconv.Atoi(cid)
-	if err != nil {
-		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
-		return
-	}
+	//contestID, err := strconv.Atoi(req.ID)
+	//if err != nil {
+	//	Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+	//	return
+	//}
 
 	contest := models.Contest{
-		ID: contestID,
+		ID: req.ID,
 	}
 	if err := contest.ContestDelete(); err != nil {
 		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
@@ -315,14 +361,35 @@ func GetContestSubmission(c *gin.Context) {
 }
 
 type UpdateContestRequest struct {
-	ID       int    `form:"id" json:"id"`
-	PIDList  string `form:"pid_list" json:"pid_list"`
-	Problems string `form:"problems" json:"problems"`
+	ID        int       `form:"id" json:"id"`
+	PIDList   string    `form:"pid_list" json:"pid_list"`
+	Problems  string    `form:"problems" json:"problems"`
 	StartTime time.Time `form:"start_time" json:"start_time"`
-	EndTime time.Time `form:"end_time" json:"end_time"`
+	EndTime   time.Time `form:"end_time" json:"end_time"`
 }
 
 func PostUpdateContest(c *gin.Context) {
+	req := UpdateContestRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	contest := models.Contest{
+		ID:        req.ID,
+		PIDList:   req.PIDList,
+		Problems:  req.Problems,
+		StartTime: req.StartTime,
+		EndTime:   req.EndTime,
+	}
+
+	if err := contest.ContestUpdate(); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+	return
 
 }
 

@@ -1,8 +1,6 @@
 package models
 
 import (
-	"encoding/json"
-	"github.com/astaxie/beego/logs"
 	"github.com/jinzhu/gorm"
 	"strconv"
 	"time"
@@ -103,22 +101,22 @@ func (user *User) UpdateProfile() error {
 func (user *User) UserList() (*[]User, error) {
 	var userList []User
 
-	key := "userList"
-	if Exists(key) {
-		data, err := Get(key)
-		if err != nil {
-			logs.Error(err)
-			return nil, err
-		}
-		json.Unmarshal(data, &userList)
-		return &userList, nil
-	}
+	//key := "userList"
+	//if Exists(key) {
+	//	data, err := Get(key)
+	//	if err != nil {
+	//		logs.Error(err)
+	//		return nil, err
+	//	}
+	//	json.Unmarshal(data, &userList)
+	//	return &userList, nil
+	//}
 
 	err := db.Model(&User{}).Scan(&userList).Error
 	if err != nil {
 		return nil, err
 	}
-	Set(key, userList, 3600)
+	//Set(key, userList, 3600)
 	return &userList, nil
 }
 

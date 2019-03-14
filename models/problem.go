@@ -195,6 +195,14 @@ func GetContestProblemDetail(pid, cid, index int) (*ContestProblem, error) {
 	return &contestProblem, nil
 }
 
+func (contestProblem *ContestProblem) CreateContestProblem() error {
+	err := db.Model(&ContestProblem{}).Create(contestProblem).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (problem *Problem) CreateProblem() error {
 	err := db.Model(&Problem{}).Create(problem).Error
 	if err != nil {
