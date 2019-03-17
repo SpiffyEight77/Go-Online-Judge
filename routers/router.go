@@ -38,6 +38,8 @@ func InitRouter() *gin.Engine {
 			{
 				profile.GET("/detail", controllers.GetUserProfile)
 				profile.POST("/edit", controllers.PostUserProfile)
+				profile.POST("/update", controllers.PostUserUpdate)
+				profile.POST("/delete", controllers.PostUserDelete)
 			}
 		}
 		problem := v1.Group("/problem")
@@ -53,6 +55,9 @@ func InitRouter() *gin.Engine {
 		{
 			news.GET("/list", controllers.GetNewsList)
 			news.GET("/detail", controllers.GetNewsDetail)
+			news.POST("/create", controllers.PostNewsCreate)
+			news.POST("/update", controllers.PostNewsUpdate)
+			news.POST("/delete", controllers.PostNewsDelete)
 		}
 		submission := v1.Group("/submission")
 		{

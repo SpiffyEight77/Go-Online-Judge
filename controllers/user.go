@@ -232,3 +232,53 @@ func GetUserList(c *gin.Context) {
 	}
 	Response(c, http.StatusOK, errCode.SUCCESS, data)
 }
+
+type UserUpdateRequest struct {
+	UID      int    `form:"uid" json:"uid" `
+	Nickname string `form:"nickname" json:"nickname" `
+	Email    string `form:"email" json:"email" `
+}
+
+func PostUserUpdate(c *gin.Context) {
+	req := UserUpdateRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	//UID, _ := strconv.Atoi(req.Uid)
+	user := models.User{
+		//ID:       UID,
+		ID:       req.UID,
+		Nickname: req.Nickname,
+		Email:    req.Email,
+	}
+
+	if err := user.UpdateProfile(); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}
+
+func PostUserDelete(c *gin.Context) {
+	req := UserUpdateRequest{}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
+		return
+	}
+
+	//UID, _ := strconv.Atoi(req.Uid)
+	user := models.User{
+		//ID:       UID,
+		ID:       req.UID,
+	}
+
+	if err := user.DeleteUser(); err != nil {
+		Response(c, http.StatusInternalServerError, errCode.ERROR, nil)
+		return
+	}
+
+	Response(c, http.StatusOK, errCode.SUCCESS, nil)
+}

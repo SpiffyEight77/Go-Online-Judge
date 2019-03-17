@@ -67,16 +67,16 @@ func (user *User) UserProfile() (*User, error) {
 }
 
 func (user *User) UpdateProfile() error {
-	_, err := Delete("userList")
-	if err != nil {
-		return err
-	}
+	//_, err := Delete("userList")
+	//if err != nil {
+	//	return err
+	//}
 
-	_, err = Delete("userID" + strconv.Itoa(user.ID))
-	if err != nil {
-		return nil
-	}
-	return db.Model(&User{}).Update(&user).Error
+	//_, err = Delete("userID" + strconv.Itoa(user.ID))
+	//if err != nil {
+	//	return nil
+	//}
+	return db.Model(&User{}).Update(&user).Where("id = ?", user.ID).Error
 }
 
 //func (user *User) DeleteUser() error {
@@ -131,5 +131,13 @@ func (user *User) UpdateUserSubmission(solve, submission int) error {
 		return err
 	}
 
+	return nil
+}
+
+func (user *User) DeleteUser() error {
+	err := db.Model(&User{}).Delete(&user).Where("id = ?", user.ID).Error
+	if err != nil {
+		return err
+	}
 	return nil
 }

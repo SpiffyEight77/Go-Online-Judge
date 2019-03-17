@@ -73,15 +73,23 @@ func (news *News) NewsCreateAndUpdate() error {
 }
 
 func (news *News) NewsDelete() error {
-	_, err := Delete("newsList")
-	if err != nil {
-		return err
-	}
+	//_, err := Delete("newsList")
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//key := "newsID" + strconv.Itoa(news.ID)
+	//_, err = Delete(key)
+	//if err != nil {
+	//	return err
+	//}
+	return db.Model(&News{}).Delete(&news).Where("id = ?",news.ID).Error
+}
 
-	key := "newsID" + strconv.Itoa(news.ID)
-	_, err = Delete(key)
-	if err != nil {
-		return err
-	}
-	return db.Model(&News{}).Delete(&news).Error
+func (news *News) NewsUpdate() error {
+	return db.Model(&News{}).Update(&news).Where("id = ?", news.ID).Error
+}
+
+func (news *News) NewsCreate() error {
+	return db.Model(&News{}).Create(&news).Error
 }
