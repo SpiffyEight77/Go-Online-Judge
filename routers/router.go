@@ -1,12 +1,12 @@
 package routers
 
 import (
+	"Go-Online-Judge/controllers"
+	_ "Go-Online-Judge/docs"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"online-judge/controllers"
-	_ "online-judge/docs"
 	"time"
 )
 
@@ -70,8 +70,8 @@ func InitRouter() *gin.Engine {
 			contest.GET("/list", controllers.GetContestList)
 			contest.GET("/detail", controllers.GetContestDetail)
 			contest.GET("/submission", controllers.GetContestSubmission)
-			contest.POST("/update",controllers.PostUpdateContest)
-			contest.POST("/create",controllers.PostCreateContest)
+			contest.POST("/update", controllers.PostUpdateContest)
+			contest.POST("/create", controllers.PostCreateContest)
 			contest.POST("/delete", controllers.PostDeleteContest)
 			//contest.POST("/submit", controllers.PostContestProblemSubmit)
 			problem := contest.Group("/problem")

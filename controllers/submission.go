@@ -1,13 +1,13 @@
 package controllers
 
 import (
+	"Go-Online-Judge/common/errCode"
+	"Go-Online-Judge/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/levigross/grequests"
 	"github.com/spf13/viper"
 	"net/http"
-	"online-judge/common/errCode"
-	"online-judge/models"
 	"strconv"
 	"time"
 )

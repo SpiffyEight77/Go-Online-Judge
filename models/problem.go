@@ -143,16 +143,16 @@ type ContestProblem struct {
 
 func (contestProblem *ContestProblem) UpdateContestProblemSubmission(solve, submission int) error {
 	err := db.Model(&contestProblem).
+		Where("cid = ? and pid = ?", contestProblem.CID, contestProblem.PID).
 		UpdateColumn("submission", gorm.Expr("submission + ?", submission)).
-		Where("cid = ? and pid = ?", contestProblem.CID, contestProblem.ID).
 		Error
 	if err != nil {
 		return err
 	}
 
 	err = db.Model(&contestProblem).
+		Where("cid = ? and pid = ?", contestProblem.CID, contestProblem.PID).
 		UpdateColumn("solve", gorm.Expr("solve + ?", solve)).
-		Where("cid = ? and pid = ?", contestProblem.CID, contestProblem.ID).
 		Error
 	if err != nil {
 		return err
@@ -169,7 +169,7 @@ func (contestProblem *ContestProblem) GetContestProblemDetails(index, cid int) (
 	//Index := strconv.Itoa(index)
 
 	err := db.Model(&ContestProblem{}).
-		Where(&ContestProblem{Index: Index, CID: CID}).
+		Where(&ContestProblem{CID: CID, Index: Index}).
 		Scan(&contestProblem).
 		Error
 	if err != nil {

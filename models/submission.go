@@ -59,6 +59,7 @@ func (contestSubmission *ContestSubmission) CreateContestSubmission() error {
 
 func (contestSubmission *ContestSubmission) ContestSubmissions() (*[]ContestSubmission, error) {
 	var contestSubmissions []ContestSubmission
+	//err := db.Model(&ContestSubmission{}).Where("cid = ?",contestSubmission.CID).Scan(&contestSubmissions).Error
 	err := db.Model(&ContestSubmission{}).Scan(&contestSubmissions).Error
 	if err != nil {
 		return nil, err

@@ -22,7 +22,7 @@ func GenerateToken(username, password string) (string, error) {
 		password,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
-			Issuer:    "online-judge",
+			Issuer:    "Go-Online-Judge",
 		},
 	}
 

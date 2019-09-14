@@ -12,9 +12,9 @@ database:
 #  url: "root:rootroot@tcp(mysql:3306)/onlinejudge?charset=utf8&parseTime=True&loc=Local"
 
 judge:
-#  url: "localhost:3000/"
-  url: "http://117.50.84.209:3000"
+  url: "http://localhost:3000"
+#  url: "http://117.50.84.209:3000"
 
 host:
-#  url: "http://localhost:4040"
-  url: "http://117.50.84.209:4040"
+  url: "http://localhost:4040"
+#  url: "http://117.50.84.209:4040"

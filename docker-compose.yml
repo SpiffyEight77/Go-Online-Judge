@@ -14,7 +14,7 @@ services:
     - "8000:3306"
 
   web1:
-    build: .
+    build: ""
     volumes:
       - .:/gin-sample
     ports:
@@ -24,7 +24,7 @@ services:
       - mysql
 
   web2:
-    build: .
+    build: ""
     volumes:
       - .:/gin-sample
     ports:

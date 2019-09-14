@@ -3,8 +3,8 @@ package main
 import (
 	log "github.com/cihub/seelog"
 	"github.com/spf13/viper"
-	"online-judge/models"
-	"online-judge/routers"
+	"Go-Online-Judge/models"
+	"Go-Online-Judge/routers"
 )
 
 const (

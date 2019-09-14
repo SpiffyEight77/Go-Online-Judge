@@ -1,13 +1,13 @@
 package controllers
 
 import (
+	"Go-Online-Judge/common/errCode"
+	"Go-Online-Judge/middlewares/jwt"
+	"Go-Online-Judge/models"
 	"fmt"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"online-judge/common/errCode"
-	"online-judge/middlewares/jwt"
-	"online-judge/models"
 	"strconv"
 	"time"
 )
@@ -272,7 +272,7 @@ func PostUserDelete(c *gin.Context) {
 	//UID, _ := strconv.Atoi(req.Uid)
 	user := models.User{
 		//ID:       UID,
-		ID:       req.UID,
+		ID: req.UID,
 	}
 
 	if err := user.DeleteUser(); err != nil {

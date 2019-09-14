@@ -1,8 +1,8 @@
 package controllers
 
 import (
+	"Go-Online-Judge/common/errCode"
 	"github.com/gin-gonic/gin"
-	"online-judge/common/errCode"
 )
 
 func Response(c *gin.Context, httpCode, code int, data interface{}) {

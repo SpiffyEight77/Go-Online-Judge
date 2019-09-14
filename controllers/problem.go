@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"Go-Online-Judge/common/errCode"
+	"Go-Online-Judge/models"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"online-judge/common/errCode"
-	"online-judge/models"
 	"strconv"
 )
 
@@ -303,7 +303,7 @@ func PostDeleteProblem(c *gin.Context) {
 	}
 
 	problem := models.Problem{
-		ID:           req.ID,
+		ID: req.ID,
 	}
 
 	fmt.Println(problem)

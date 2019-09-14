@@ -1,14 +1,14 @@
 package controllers
 
 import (
+	"Go-Online-Judge/common/errCode"
+	"Go-Online-Judge/models"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/levigross/grequests"
 	"github.com/spf13/viper"
 	"net/http"
-	"online-judge/common/errCode"
-	"online-judge/models"
 	"strconv"
 	"time"
 )
@@ -252,6 +252,8 @@ func PostContestProblemSubmit(c *gin.Context) {
 	data := RepContestData{}
 	res.JSON(&data)
 
+	fmt.Println(data)
+
 	submitTime := time.Now()
 
 	ro = &grequests.RequestOptions{
@@ -291,16 +293,19 @@ func PostContestProblemSubmit(c *gin.Context) {
 		CreatedAt: submitTime,
 	}
 
+	fmt.Println(contestSubmission)
+
 	err = contestSubmission.CreateContestSubmission()
 	if err != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
 		return
 	}
 
-	pid, err := strconv.Atoi(req.PID)
+	//pid, err := strconv.Atoi(req.PID)
 	contestProblem := models.ContestProblem{
-		ID:  pid,
-		CID: req.CID,
+		//Index:  req.Index,
+		PID: contestSubmission.PID,
+		CID: contestSubmission.CID,
 	}
 
 	if contestSubmission.Judge == "Accepted" {
@@ -351,7 +356,10 @@ func GetContestProblemDetail(c *gin.Context) {
 }
 
 func GetContestSubmission(c *gin.Context) {
-	contestSubmission := models.ContestSubmission{}
+	cid := c.Query("cid")
+	contestSubmission := models.ContestSubmission{
+		CID: cid,
+	}
 	data, err := contestSubmission.ContestSubmissions()
 	if err != nil {
 		Response(c, http.StatusBadRequest, errCode.BADREQUEST, nil)
